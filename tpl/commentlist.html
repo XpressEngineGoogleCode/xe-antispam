@@ -1,0 +1,79 @@
+<!--%import("filter/delete_checked_comment.xml")-->
+<!--#include("_header.html")-->
+
+<!-- 검색 -->
+<div class="fl">
+    <form action="./" method="get" class="adminSearch">
+    <input type="hidden" name="module" value="{$module}" />
+    <input type="hidden" name="act" value="{$act}" />
+    <input type="hidden" name="module_srl" value="{$module_srl}" />
+        <fieldset>
+            <select name="search_target">
+                <option value="">{$lang->search_target}</option>
+                <!--@foreach($lang->search_target_list as $key => $val)-->
+                <option value="{$key}" <!--@if($search_target==$key)-->selected="selected"<!--@end-->>{$val}</option>
+                <!--@end-->
+            </select>
+            <input type="text" name="search_keyword" value="{htmlspecialchars($search_keyword)}" class="inputTypeText" />
+            <span class="button blue"><input type="submit" value="{$lang->cmd_search}" /></span>
+            <a href="{getUrl('','module',$module,'act',$act)}" class="button black"><span>{$lang->cmd_cancel}</span></a>
+        </fieldset>
+    </form>
+</div>
+
+<form id="fo_list" action="./" method="get" onsubmit="return procFilter(this, delete_checked_comment)">
+<input type="hidden" name="page" value="{$page}" />
+<div class="fr">
+	<span class="button green"><button type="button" onclick="doSpamProccess('comment')">스팸설정 적용</button></span>
+	<span class="button red"><button type="button" onclick="sendSpamContents('comment')">스팸신고 및 삭제</button></span>
+</div>
+<!-- 모듈 선택 -->
+<!--
+<div class="fr">
+    <a href="{getUrl('','module','module','act','dispModuleSelectList','id','target_module','type','single')}" onclick="popopen(this.href,'ModuleSelect');return false;" class="button green"><span>{$lang->cmd_find_module}</span></a>
+    <span class="button red"><input type="submit" value="{$lang->cmd_delete_checked_comment}" /></span>
+</div>
+-->
+<!-- 목록 -->
+<table cellspacing="0" class="crossTable clear">
+<caption>Total {number_format($total_count)}, Page {number_format($page)}/{number_format($total_page)}</caption>
+<thead>
+    <tr>
+        <th scope="col"><div>{$lang->no}</div></th>
+        <th scope="col"><div><input type="checkbox" onclick="XE.checkboxToggleAll(); return false;" /></div></th>
+        <th scope="col" class="wide"><div>{$lang->comment}</div></th>
+        <th scope="col"><div>{$lang->nick_name}</div></th>
+        <th scope="col"><div>{$lang->date}</div></th>
+        <th scope="col"><div>{$lang->ipaddress}</div></th>
+    </tr>
+</thead>
+<tbody>
+    <!--@foreach($comment_list as $no => $val)-->
+    <tr>
+        <td class="number center">{$no}</td>
+        <td class="center"><input type="checkbox" <!--@if(in_array($val->comment_srl,$keep_srls))--> disabled="disabled"<!--@else--> class="check_content_srl" name="cart" <!--@end--> value="{$val->comment_srl}"  /></td>
+        <td class="left"><a href="{getUrl('','document_srl',$val->document_srl)}#comment_{$val->comment_srl}" onclick="window.open(this.href);return false;">{cut_str(htmlspecialchars(strip_tags($val->content)),200,'...')}</a></td>
+        <td class="nowrap"><span class="member_{$val->member_srl}">{htmlspecialchars($val->nick_name)}</span></td>
+        <td class="date center nowrap">{(zdate($val->regdate,"Y-m-d\nH:i:s"))}</td>
+        <td class="number left nowrap"><a href="{getUrl('search_target','ipaddress','search_keyword',$val->ipaddress)}">{$val->ipaddress}</a></td>
+    </tr>
+    <!--@end-->
+</tbody>
+</table>
+
+</form>
+
+<!-- 페이지 네비게이션 -->
+<div class="pagination a1">
+    <a href="{getUrl('page','','module_srl',$module_srl)}" class="prevEnd">{$lang->first_page}</a> 
+    <!--@while($page_no = $page_navigation->getNextPage())-->
+        <!--@if($page == $page_no)-->
+            <strong>{$page_no}</strong> 
+        <!--@else-->
+            <a href="{getUrl('page',$page_no,'module_srl',$module_srl)}">{$page_no}</a> 
+        <!--@end-->
+    <!--@end-->
+    <a href="{getUrl('page',$page_navigation->last_page,'module_srl',$module_srl)}" class="nextEnd">{$lang->last_page}</a>
+</div>
+
+<!--#include("progress.html")-->

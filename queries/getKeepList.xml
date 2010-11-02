@@ -1,0 +1,18 @@
+<query id="getKeepList" action="select">
+    <tables>
+        <table name="nspam_keep" />
+    </tables>
+    <columns>
+        <column name="*" />
+    </columns>
+
+    <conditions>
+        <condition operation="equal" column="type" var="type" />
+    </conditions>
+    <navigation>
+		<index var="list_order" default="regdate" order="desc" />
+		<list_count var="list_count" default="20" />
+        <page_count var="page_count" default="10" />
+        <page var="page" default="1" />
+    </navigation>
+</query>

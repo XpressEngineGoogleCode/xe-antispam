@@ -1,0 +1,14 @@
+<query id="getDeniedIPList" action="select">
+    <tables>
+        <table name="nspam_denied_ip" />
+    </tables>
+    <columns>
+        <column name="*" />
+    </columns>
+    <conditions>
+      <condition operation="more" column="warn_count" var="warn_count" default="3"/>
+    </conditions>
+    <navigation>
+        <index var="sort_index" default="regdate" order="desc" />
+    </navigation>
+</query>

@@ -1,0 +1,123 @@
+<!--#include("_header.html")-->
+<!--%import("filter/insert_config.xml")-->
+
+<form action="" onsubmit="return filterInsertConfig(this)" >
+<input type="hidden" name="type" value="{$type}" />
+
+<table class="rowTable" cellspacing="0">
+	<tbody>
+	<tr>
+		<th>사용여부</th>
+		<td>
+			<input type="checkbox" name="use_nspam" value="Y" id="nspam_enable" <!--@if($nspam_config->use_nspam=='Y')-->checked="checked"<!--@end--> />
+			<label for="nspam_enable">
+				사용
+			</label>
+		</td>
+	</tr>
+	<tr>
+		<th>제외 모듈 선택</th>
+		<td>
+			<p>NAVER 스팸 필터를 사용하지 않을 모듈을 선택합니다.</p>
+			<input type="hidden" name="module_apply" value="deny" id="module_deny" />
+			<input type="hidden" id="target_module" name="target_module" value="<!--@if(is_array($nspam_config->target_module))-->{join(',',$nspam_config->target_module)}<!--@end-->" />
+			<select id="_target_module" size="10" style="width:200px">
+			<!--@if($config_target_modules_info)-->
+				<!--@foreach($config_target_modules_info as $info)-->
+				<option value="{$info->module_srl}">{$info->browser_title}({$info->module})</option>
+				<!--@end-->
+			<!--@end-->
+			</select>
+			<div>
+				<a class="button green" onclick="popopen(this.href,'ModuleSelect');return false;" href="{getUrl('','module','module','act','dispModuleSelectList','id','target_module')}"><span>모듈 찾기</span></a>
+				<span class="button red"><button type="button" onclick="midRemove('target_module')">{$lang->cmd_delete}</button></span>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<th>스팸필터</th>
+		<td>
+		<p>형태소 분석, 외국어 구분 등 스팸 여부를 판정하는 소프트웨어 입니다.</p>
+			<input type="hidden" id="use_spamfilters" name="use_spamfilters" value="<!--@if(is_array($nspam_config->use_spamfilters))-->{join(',',array_keys($nspam_config->use_spamfilters))}<!--@end-->" />
+			<input type="hidden" id="use_spamfilters_info" name="use_spamfilters_info" value="" />
+
+			<select id="_use_spamfilters" size="5" style="width:200px" class="selected">
+			<!--@if($nspam_config->use_spamfilters)-->
+				<!--@foreach($nspam_config->use_spamfilters as $id => $info)-->
+					<option value="{$id}">{$info}</option>
+				<!--@end-->
+			<!--@end-->
+			</select>
+			<div>
+				<a class="button green" onclick="popopen(this.href,'SelectSpam');return false;" href="{getUrl('','module','nspam','act','dispNspamAdminPopupSpamFilters','id','use_spamfilters')}"><span>스팸필터 찾기</span></a>
+				<span class="button red"><button type="button" onclick="midRemove('use_spamfilters')">{$lang->cmd_delete}</button></span>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<th>스팸사전</th>
+		<td>
+			<p>단어 또는 문자열을 담아 놓은 스팸사전입니다. 이 스팸사전으로 콘텐트를 검색하여 스팸을 여부를 판정합니다. </p>
+			<input type="hidden" id="use_spamdics" name="use_spamdics" value="<!--@if(is_array($nspam_config->use_spamdics))-->{join(',',array_keys($nspam_config->use_spamdics))}<!--@end-->"/>
+			<input type="hidden" id="use_spamdics_info" name="use_spamdics_info" value="" />
+			<select id="_use_spamdics" size="5" style="width:200px" class="selected">
+			<!--@if($nspam_config->use_spamdics)-->
+				<!--@foreach($nspam_config->use_spamdics as $id => $info)-->
+					<option value="{$id}">{$info}</option>
+				<!--@end-->
+			<!--@end-->
+
+			</select>
+			<div>
+				<a class="button green" onclick="popopen(this.href,'SelectSpam');return false;" href="{getUrl('','module','nspam','act','dispNspamAdminPopupSpamDics','id','use_spamdics')}"><span>스팸사전 찾기</span></a>
+				<span class="button red"><button type="button" onclick="midRemove('use_spamdics')">{$lang->cmd_delete}</button></span>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<th>스팸지수 테스트</th>
+		<td>
+			<p>설정된 스팸필터와 스팸사전으로 스팸지수를 테스트 합니다.</p>
+			<textarea id="test_content" rows="6" cols="80"></textarea>
+			<br />
+			<span class="button"><button type="button" onclick="testGetSpamScore()">스팸지수 확인</button></span>
+		</td>
+	</tr>
+
+	<tr>
+		<th>스팸대응 설정</th>
+		<td>
+<p>스팸 공동대응센터에서 설정한 스팸필터와 스팸사전을 통해 확인된 '스팸 지수'가 있습니다. 스팸 지수를 이용하여 글을 어떻게 처리할 것인지 다룹니다.</p>
+			<strong>- 삭제 : </strong>
+				<input type="text" name="score_delete_content" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_delete_content}" />이상이면 DB에서 완전히 삭제 합니다.
+
+	<br />
+			<strong>- 보관 : </strong>
+				<input type="text" name="score_trash_content" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_trash_content}" />이상이면 목록에서 삭제 후 보관함 으로 이동 합니다.
+
+	<br />
+			<strong>- IP차단 : </strong>
+				<input type="text" name="score_denied_ip" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_denied_ip}" />이상이면 글쓴이의 IP를 차단합니다.
+
+	<br />
+			<strong>- 계정 사용 중지 : </strong>
+				<input type="text" name="score_denied_user" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_denied_user}" />이상이면 글쓴이의 계정을 사용 중지 합니다.
+			<p>빈 칸에는 '1 ~ 100' 사이의 숫자를 입력하세요. 숫자는 '스팸 지수(스팸일 확률)'를 의미 합니다.</p>
+		</td>
+	</tr>
+
+
+
+	</tbody>
+	<tfoot>
+		<td colspan="2" class="buttonArea"><span class="button black"><button type="submit">{$lang->cmd_submit}</button></span></td>
+	</tfoot>
+</table>
+</form>
+<script type="text/javascript">
+if(typeof(xe.lang) == 'undefined') xe.lang = {};
+xe.lang.score_deleteContent = '{$lang->score_delete_content}';
+xe.lang.score_trashContent = '{$lang->score_trash_content}';
+xe.lang.score_deniedIP = '{$lang->score_denied_ip}';
+xe.lang.score_deniedUser = '{$lang->score_denied_user}';
+</script>

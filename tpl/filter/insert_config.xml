@@ -1,0 +1,14 @@
+<filter name="insert_config" module="nspam" act="procNspamAdminConfigUpdate">
+    <form>
+        <node target="target" required="true" />
+        <node target="score_delete_content" required="true" maxlength="3" filter="check_score" />
+        <node target="score_trash_content" required="true" maxlength="3" filter="check_score" />
+        <node target="score_denied_ip" required="true" maxlength="3" filter="check_score" />
+        <node target="score_denied_user" required="true" maxlength="3" filter="check_score" />
+    </form>
+    <parameter />
+    <response>
+        <tag name="error" />
+        <tag name="message" />
+    </response>
+</filter>

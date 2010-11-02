@@ -1,0 +1,11 @@
+<query id="insertKeep" action="insert">
+    <tables>
+        <table name="nspam_keep" />
+    </tables>
+    <columns>
+        <column name="nspam_keep_srl" var="nspam_keep_srl" />
+        <column name="type" var="type"  default="document" />
+        <column name="data" var="data" />
+        <column name="regdate" default="curdate()" />
+    </columns>
+</query>
