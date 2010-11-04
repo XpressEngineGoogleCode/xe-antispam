@@ -215,9 +215,6 @@
 		function doSpamProcess($obj,$score, $type){
 			$action_list = $this->getAction($score, $type);
 
-			debugPrint($action_list);
-			debugPrint("123123");
-
 			foreach($action_list as $k => $act){
 				if($act=='denied_ip'){
 				  $this->giveWarning();

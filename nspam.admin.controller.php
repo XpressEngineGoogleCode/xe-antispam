@@ -303,12 +303,12 @@
 			if($c>0){
 				$output = $oReq->request();
 				if($output->error == 0 || $output->contents || is_array($output->contents->item)){
-					$oTrackbckController = &getController('trackback');
+					$oTrackbackController = &getController('trackback');
 
 					$item = $output->contents->item;
 					if($item){
 						foreach($item as $i){
-							$output = $oTraclbaclController->deleteTrackback($i->id,true);
+							$output = $oTrackbackController->deleteTrackback($i->id,true);
 							if(!$output->toBool()) return $output;
 						}
 					}
@@ -417,7 +417,7 @@
 
 			$document_srls = array();
 			foreach($oDocumentList as $k => $oDocument){
-				$oReq->addContent($oDocument->document_srl,$oDocument->get('content'),$oDocument->get('title'),$oDocument->get('ipaddress'),$oDocument->get('regdate'));
+				$oReq->addContent($oDocument->document_srl,str_replace('&nbsp;', ' ', $oDocument->get('content')), $oDocument->get('title'),$oDocument->get('ipaddress'),$oDocument->get('regdate'));
 			}
 
 			$output = $oReq->request();
