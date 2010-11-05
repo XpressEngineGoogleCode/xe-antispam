@@ -468,8 +468,8 @@
 			if($dics) $oReq->addSpamDics($dics);
 
 			// load document
-			$output = $oCommentntModel->getCommentList($obj,false,false);
-			$oCommenttList = $output->data;
+			$output = $oCommentModel->getCommentList($obj,false,false);
+			$oCommentList = $output->data;
 
 			$this->add('cur_page',$output->page_navigation->cur_page);
 			$this->add('total_page',$output->page_navigation->total_page);
