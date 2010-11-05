@@ -161,20 +161,26 @@
 		/**
 		 * @brief 스팸 지수에 따라 act를 구함.
 		 */
-		function getAction($score, $type){
-			$return = array();
+		function getAction($score, $type){	
+			$is_logged = Context::get('is_logged');
 
+			$return = array();
 			$oNspamModel = &getModel('nspam');
+
 			$config = $oNspamModel->getNspamPartConfig($type);
+
 			if(!$config) return $return;
 			
-			if($config->score_denied_ip <= $score) array_push($return,'denied_ip');
-			if($config->score_denied_user <= $score) array_push($return, 'denied_user');
-			if($config->score_delete_content <= $score) array_push($return,'delete');
-
-			if(!in_array('delete',$return) && $config->score_trash_content <= $score){
-				array_push($return, 'trash');	
+			// 로그인되어 있으면 계정 차단, 비로그인이면 아이피 차단
+			if ($is_logged) {
+				if ($config->score_denied_ip <= $score) 
+					array_push($return,'denied_ip');
+			} else {
+				if ($config->score_denied_user <= $score) 
+					array_push($return, 'denied_user');
 			}
+			if ($config->score_delete_content <= $score) array_push($return,'delete');
+			if (!in_array('delete',$return) && $config->score_trash_content <= $score) array_push($return, 'trash');	
 
 			return $return;
 		}
