@@ -170,14 +170,16 @@
 			$config = $oNspamModel->getNspamPartConfig($type);
 
 			if(!$config) return $return;
+
 			
 			// 로그인되어 있으면 계정 차단, 비로그인이면 아이피 차단
 			if ($is_logged) {
-				if ($config->score_denied_ip <= $score) 
-					array_push($return,'denied_ip');
-			} else {
 				if ($config->score_denied_user <= $score) 
-					array_push($return, 'denied_user');
+					array_push($return,'denied_user');
+
+			} else {
+				if ($config->score_denied_ip <= $score) 
+					array_push($return, 'denied_ip');
 			}
 			if ($config->score_delete_content <= $score) array_push($return,'delete');
 			if (!in_array('delete',$return) && $config->score_trash_content <= $score) array_push($return, 'trash');	
@@ -237,6 +239,28 @@
 				}
 			}
 			
+			return new Object();
+		}
+
+
+		function doSpamBatchProcess($obj, $score, $type, $author_srl) {
+
+			$action_list = $this->getAction($score, $type);
+
+			foreach($action_list as $k => $act){
+				if($act=='denied_ip'){
+				  $this->giveWarning();
+				}else if($act=='denied_user'){
+					$this->deniedUser($author_srl);
+				}else if($act=='trash'){
+					$this->trashObject($obj, $type);
+					return new Object(-1,'msg_trash_content');
+				}else if($act=='delete'){
+					$this->deleteObject($obj, $type);
+
+					return new Object(-1, 'msg_delete_conetnet');
+				}
+			}
 			return new Object();
 		}
 		
@@ -307,27 +331,37 @@
 		}
 
 		/**
-		 * @brief 로그인 된 사용자일 경우 사용자 차단 처리
+		 * @brief 로그인 된 사용자일 경우 사용자 차단 처리, 사용자가 지정되어 있을 경우 해당 사용자를 차단.
 		 */
-		function deniedUser() {
+		function deniedUser($member_srl=NULL) {
 			$is_logged = Context::get('is_logged');
 
-			if($is_logged){
-				$logged_info = Context::get('logged_info');
+
+			if  ($is_logged) {
 				$vars = new stdClass;
-				$vars->member_srl = $logged_info->member_srl;
-				
+				$target_user = NULL;
+
+				// member_srl 이 지정된 경우 해당 사용자 차단
+				// 아닌 경우, 로그인된 사용자를 차단.
+				if (!$member_srl) {
+					$logged_info = Context::get('logged_info');
+					$target_user = $logged_info->member_srl;
+				} else {
+					$target_user = $member_srl;
+				}
+
+				$vars->member_srl = $target_user;
 				$output = executeQuery('nspam.updateDeniedMember',$vars);
 				
 				
-				// 회원 description 에 차단 사유 및 시간을 등록
+				// 차단 대상 회원 description 에 차단 사유 및 시간을 등록
 				$usr_info = executeQuery('member.getMemberInfoByMemberSrl', $vars);
 				$date = date("Y.m.d G:i:s");
 				$new_desc = $date."에 스팸등록으로 차단되었습니다.\n".$usr_info->data->description;
 
 				unset($vars);
 				$vars = new stdClass;
-				$vars->member_srl = $logged_info->member_srl;
+				$vars->member_srl = $target_user;
 				$vars->description = $new_desc;
 				$opt = executeQuery('member.updateMember', $vars);
 
@@ -336,6 +370,7 @@
 
 			return new Object();
 		}
+
 
 		/**
 		 * @brief 스팸으로 판정된 댓글/글을 삭제함.

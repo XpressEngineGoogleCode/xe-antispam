@@ -376,6 +376,7 @@
 		}
 
 		function procNspamAdminAllDocumentDoProccess(){
+
 			$type = 'document';
 			$page = Context::get('page');
 
@@ -416,22 +417,30 @@
 			$this->add('total_count',$output->page_navigation->total_count);
 
 			$document_srls = array();
+
 			foreach($oDocumentList as $k => $oDocument){
-				$oReq->addContent($oDocument->document_srl,str_replace('&nbsp;', ' ', $oDocument->get('content')), $oDocument->get('title'),$oDocument->get('ipaddress'),$oDocument->get('regdate'));
+				$oReq->addContent($oDocument->document_srl,
+				str_replace('&nbsp;', ' ', $oDocument->get('content')), 
+				$oDocument->get('title'),
+				$oDocument->get('ipaddress'),
+				$oDocument->get('regdate'));
 			}
 
 			$output = $oReq->request();
 			if(!$output || $output->error != 0 || !$output->scores || !$output->scores->item) return new Object(-1,'msg_spamapi_error');
 
-			$items = $output->scores->item;
+			$items = array_reverse($output->scores->item);
+
 			foreach($items as $i => $item){
 				if($item->score < 1) continue;
 
 				unset($obj);
 				$obj = new stdClass;
 				$obj->document_srl = $item->id;
-
-				//$output = $oNspamController->doSpamProcess($obj, $item->score, $type);
+				
+				// 글을 쓴 회원의 member_srl
+				$author_srl = $oDocumentList[$i+1]->variables['member_srl'];
+				$output = $oNspamController->doSpamBatchProcess($obj, $item->score, $type, $author_srl);
 			}
 		}
 
@@ -510,6 +519,11 @@
 				$obj = new stdClass;
 				$obj->comment_srl = $item->id;
 
+				// 글을 쓴 회원의 member_srl
+				$author_srl = $oCommentList[$i+1]->variables['member_srl'];
+				
+				$output = $oNspamController->doSpamBatchProcess($obj, $item->score, $type, $author_srl);
+				
 				//$output = $oNspamController->doSpamProcess($obj, $item->score, $type);
 			}
 		}
