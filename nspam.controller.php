@@ -194,7 +194,7 @@
 			$content = $vars->content;
 			$title = $vars->title;
 			$ip = $_SERVER['REMOTE_ADDR'];
-			$time = date('YmdHis');
+			$time = date('Y-m-d H:i:s');
 
 			$oNspamModel = &getModel('nspam');
 

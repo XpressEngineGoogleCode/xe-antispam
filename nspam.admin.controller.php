@@ -225,7 +225,7 @@
 
 			$c = 0;
 			foreach($oDocumentList as $i => $oDocument){
-				$oReq->addContent($oDocument->document_srl, $oDocument->get('content'),$oDocument->get('title'),$oDocument->get('ipaddress'),zdate('Y.m.d H:i:s',$oDocument->get('regdate')));
+				$oReq->addContent($oDocument->document_srl, $oDocument->get('content'),$oDocument->get('title'),$oDocument->get('ipaddress'),zdate($oDocument->get('regdate'), 'Y-m-d H:i:s'));
 				$c++;
 			}
 
@@ -257,7 +257,7 @@
 
 			$c = 0;
 			foreach($oCommentList as $i => $oComment){
-				$oReq->addContent($oComment->comment_srl, $oComment->get('content'),'',$oComment->get('ipaddress'),zdate('Y.m.d H:i:s',$oComment->get('regdate')));
+				$oReq->addContent($oComment->comment_srl, $oComment->get('content'),'',$oComment->get('ipaddress'),zdate($oComment->get('regdate'), 'Y-m-d H:i:s'));
 				$c++;
 			}
 
@@ -295,7 +295,7 @@
 			$c = 0;
 			if($output->data){
 				foreach($output->data as $i => $oTrackback){
-					$oReq->addContent($oTrackback->trackback_srl, $oTrackback->excerpt,$oTrackback->title,$oTrackback->ipaddress,zdate('Y.m.d H:i:s',$oTrackback->regdate));
+					$oReq->addContent($oTrackback->trackback_srl, $oTrackback->excerpt,$oTrackback->title,$oTrackback->ipaddress,zdate($oTrackback->regdate, 'Y-m-d H:i:s'));
 					$c++;
 				}
 			}
@@ -423,7 +423,7 @@
 				str_replace('&nbsp;', ' ', $oDocument->get('content')), 
 				$oDocument->get('title'),
 				$oDocument->get('ipaddress'),
-				$oDocument->get('regdate'));
+				zdate($oDocument->get('regdate'), 'Y-m-d H:i:s'));
 			}
 
 			$output = $oReq->request();
@@ -504,7 +504,7 @@
 
 			foreach($oCommentList as $k => $oComment){
 				if(!in_array($oComment->comment_srl,$keep_srls)){
-					$oReq->addContent($oComment->comment_srl,$oComment->get('content'),'',$oComment->get('ipaddress'),$oComment->get('regdate'));
+					$oReq->addContent($oComment->comment_srl,$oComment->get('content'),'',$oComment->get('ipaddress'), zdate($oComment->get('regdate'), 'Y-m-d H:i:s'));
 				}
 			}
 
@@ -558,7 +558,7 @@
 				$document_list = $oDocumentModel->getDocuments($srls,true,false);
 
 				foreach($document_list as $k => $oDocument){
-					$oReq->addContent($oDocument->document_srl,$oDocument->get('content'),$oDocument->get('title'),$oDocument->get('ipaddress'),$oDocument->get('regdate'));
+					$oReq->addContent($oDocument->document_srl,$oDocument->get('content'),$oDocument->get('title'),$oDocument->get('ipaddress'),zdate($oDocument->get('regdate'), 'Y-m-d H:i:s'));
 				}
 
 			}else if($type=='comment'){
@@ -567,7 +567,7 @@
 				$oCommentList = $oCommentModel->getComments($srls);
 
 				foreach($oCommentList as $i => $oComment){
-					$oReq->addContent($oComment->comment_srl, $oComment->get('content'),'',$oComment->get('ipaddress'),zdate('Y.m.d H:i:s',$oComment->get('regdate')));
+					$oReq->addContent($oComment->comment_srl, $oComment->get('content'),'',$oComment->get('ipaddress'), zdate($oComment->get('regdate'), 'Y-m-d H:i:s'));
 				}
 
 			}else if($type=='trackback'){
@@ -577,7 +577,7 @@
 				$output = executeQueryArray('nspam.getTrackback',$var);
 				if($output->data){
 					foreach($output->data as $i => $oTrackback){
-						$oReq->addContent($oTrackback->trackback_srl, $oTrackback->excerpt,$oTrackback->title,$oTrackback->ipaddress,zdate('Y.m.d H:i:s',$oTrackback->regdate));
+						$oReq->addContent($oTrackback->trackback_srl, $oTrackback->excerpt,$oTrackback->title,$oTrackback->ipaddress,zdate($oTrackback->regdate, 'Y-m-d H:i:s'));
 					}
 				}
 
@@ -616,7 +616,7 @@
 			if(!$content) return new Object(-1,'msg_invalid_request');
 
 			$ip = $_SERVER['REMOTE_ADDR'];
-			$time = date('YmdHis');
+			$time = date('Y-m-d H:i:s');
 
 			$oReq = new RequestGetSpamScores();
 
