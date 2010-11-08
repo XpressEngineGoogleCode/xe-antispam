@@ -336,7 +336,6 @@
 		function deniedUser($member_srl=NULL) {
 			$is_logged = Context::get('is_logged');
 
-
 			if  ($is_logged) {
 				$vars = new stdClass;
 				$target_user = NULL;
@@ -349,13 +348,16 @@
 				} else {
 					$target_user = $member_srl;
 				}
-
 				$vars->member_srl = $target_user;
-				$output = executeQuery('nspam.updateDeniedMember',$vars);
-				
-				
-				// 차단 대상 회원 description 에 차단 사유 및 시간을 등록
+
+				// 차단 대상 회원이 관리자이거나 이미 차단당했다면 차단하지 않음
 				$usr_info = executeQuery('member.getMemberInfoByMemberSrl', $vars);
+				if ($usr_info->data->is_admin == 'Y' || $usr_info->data->denied == 'Y') return new Object();
+
+				// 차단 조치
+				$output = executeQuery('nspam.updateDeniedMember',$vars);
+
+				// 차단 대상 회원 description 에 차단 사유 및 시간을 등록
 				$date = date("Y.m.d G:i:s");
 				$new_desc = $date."에 스팸등록으로 차단되었습니다.\n".$usr_info->data->description;
 
@@ -364,10 +366,8 @@
 				$vars->member_srl = $target_user;
 				$vars->description = $new_desc;
 				$opt = executeQuery('member.updateMember', $vars);
-
 				return $output;
 			}
-
 			return new Object();
 		}
 
