@@ -60,10 +60,10 @@
 			$vars->title = $obj->title;
 
 			// 스팸지수를 SIS서버로부터 가져옴
-			$score = $this->getSpamScore($vars,'document');
+			$result = $this->getSpamScore($vars,'document');
 
 			// 설정된 액션을 실행
-			$output = $this->doSpamProcess($obj,$score->score,'document');
+			$output = $this->doSpamProcess($obj, $result, 'document');
 
 			return $output;
 		}
@@ -110,10 +110,10 @@
 			$vars->content = $obj->content;
 
 			// 스팸지수를 SIS서버로부터 가져옴
-			$score = $this->getSpamScore($vars,'comment');
+			$result = $this->getSpamScore($vars,'comment');
 
 			// 설정된 액션을 실행
-			$output = $this->doSpamProcess($obj, $score->score,'comment');
+			$output = $this->doSpamProcess($obj, $result,'comment');
 
 			return $output;
 		}
@@ -150,10 +150,10 @@
 			$vars->content = $obj->excerpt;
 
 			// 스팸지수를 SIS서버로부터 가져옴
-			$score = $this->getSpamScore($vars,'trackback');
+			$result = $this->getSpamScore($vars,'trackback');
 
 			// 설정된 액션을 실행
-			$output = $this->doSpamProcess($obj, $score->score,'trackback');
+			$output = $this->doSpamProcess($obj, $result,'trackback');
 
 			return $output;
 		}
@@ -181,8 +181,7 @@
 				if ($config->score_denied_ip <= $score) 
 					array_push($return, 'denied_ip');
 			}
-			if ($config->score_delete_content <= $score) array_push($return,'delete');
-			if (!in_array('delete',$return) && $config->score_trash_content <= $score) array_push($return, 'trash');	
+			if ($config->score_trash_content <= $score) array_push($return, 'trash');
 
 			return $return;
 		}
@@ -220,8 +219,8 @@
 		/**
 		 * @brief 설정된 액션을 스팸지수에따라 실행
 		 **/
-		function doSpamProcess($obj,$score, $type){
-			$action_list = $this->getAction($score, $type);
+		function doSpamProcess($obj, $result, $type){
+			$action_list = $this->getAction($result->score, $type);
 
 			foreach($action_list as $k => $act){
 				if($act=='denied_ip'){
@@ -229,13 +228,8 @@
 				}else if($act=='denied_user'){
 					$this->deniedUser();
 				}else if($act=='trash'){
-					$this->trashObject($obj, $type);
-
+					$this->trashObject($obj, $type, $result);
 					return new Object(-1,'msg_trash_content');
-				}else if($act=='delete'){
-					$this->deleteObject($obj, $type);
-
-					return new Object(-1, 'msg_delete_conetnet');
 				}
 			}
 			
@@ -243,9 +237,10 @@
 		}
 
 
-		function doSpamBatchProcess($obj, $score, $type, $author_srl) {
+		function doSpamBatchProcess($obj, $result, $type, $author_srl) {
 
-			$action_list = $this->getAction($score, $type);
+			$action_list = $this->getAction($result->score, $type);
+	
 
 			foreach($action_list as $k => $act){
 				if($act=='denied_ip'){
@@ -253,12 +248,7 @@
 				}else if($act=='denied_user'){
 					$this->deniedUser($author_srl);
 				}else if($act=='trash'){
-					$this->trashObject($obj, $type);
-					return new Object(-1,'msg_trash_content');
-				}else if($act=='delete'){
-					$this->deleteObject($obj, $type);
-
-					return new Object(-1, 'msg_delete_conetnet');
+					$this->trashObject($obj, $type, $result);
 				}
 			}
 			return new Object();
@@ -373,66 +363,9 @@
 
 
 		/**
-		 * @brief 스팸으로 판정된 댓글/글을 삭제함.
-		 */
-		function deleteObject($obj,$type='document'){
-			if($type=='document'){
-
-				if($obj->document_srl){
-					$oDocumentModel = &getModel('document');
-					$oDocument = $oDocumentModel->getDocument($obj->document_srl);
-
-					// 이미 존재 하는 글이면 
-					if($oDocument->isExists()){
-						$oDocumentController = &getController('document');
-						$oDocumentController->deleteDocument($obj->document_srl,true);
-					}
-				}
-
-			}else if($type=='comment'){
-
-				if($obj->comment_srl){
-					$oCommentModel = &getModel('comment');
-					$oComment = $oCommentModel->getComment($obj->comment_srl);
-				
-					// 이미 댓글이 존재하는 경우
-					if($oComment->isExists()){
-
-						// 자식 댓글이 있으면 지울 수 없고, 내용 업데이트
-						if($oCommentModel->getChildCommentCount($obj->comment_srl) > 0){
-							$var = clone($obj);
-							$var->is_secret = 'Y';
-							$var->member_srl = 0;
-							
-							$output = executeQuery('comment.updateComment',$var);
-						}else{
-							$oCommentController = &getController('comment');
-							$oCommentController->deleteComment($obj->comment_srl,true);
-						}
-					}
-				}
-
-			}else if($type=='trackback'){
-
-				if($obj->trackback_srl){
-					$oTrackbackModel = &getModel('trackback');
-					$output = $oTrackbackModel->getTrackback($obj->trackback_srl);
-
-					// 트랙백이 존재하는 경우
-					if($output->data){
-						$obj = clone($output->data);
-						$output = executeQuery('trackback.deleteTrackback',$obj);
-					}
-				}
-
-			}
-
-		}
-
-		/**
 		 * @brief 스팸으로 판정된 글/댓글을 보관함으로 옮김.
 		 */
-		function trashObject($obj,$type='document'){
+		function trashObject($obj, $type='document', $result=NULL){
 
 			if($type=='document'){
 				if($obj->document_srl){
@@ -452,11 +385,19 @@
 				}
 
 				if(!$obj->list_order) $obj->update_order = $obj->list_order = $obj->document_srl* -1;
-
+				
 				$vars = new stdClass;
 				$vars->nspam_keep_srl = $obj->document_srl;
 				$vars->type = $type;
 				$vars->data = serialize($obj);
+				// 스팸사전에서 필터된 결과 저장
+				if ($result->dictionary_result && $result->dictionary_result != "") {
+					$vars->detected = $result->dictionary_result->detect == 'true' ? 'Y':'N';
+					$vars->dict_id = $result->dictionary_result->id;
+					$vars->spam_string = $result->dictionary_result->spam_string;
+				}
+				$vars->score = $result->score;
+				
 				$output = executeQuery('nspam.insertKeep',$vars);
 
 			}else if($type=='comment'){

@@ -178,7 +178,7 @@
 		}
 
 		function getUseSpamDics($type){
-			$config = $this->getNspamPartConfig($type);
+			$nspam_config = $this->getNspamPartConfig($type);
 
 			$dics = array();
 			if(is_array($nspam_config->use_spamdics) && count($nspam_config->use_spamdics)>0){

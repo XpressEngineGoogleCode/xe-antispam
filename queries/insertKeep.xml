@@ -7,5 +7,9 @@
         <column name="type" var="type"  default="document" />
         <column name="data" var="data" />
         <column name="regdate" default="curdate()" />
+		<column name="detected" var="detected" />
+		<column name="dict_id" var="dict_id" />
+		<column name="spam_string" var="spam_string" />
+		<column name="score" var="score" />
     </columns>
 </query>

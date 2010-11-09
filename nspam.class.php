@@ -46,6 +46,12 @@
 			if(!$oModuleModel->getTrigger('document.deleteDocument', 'nspam', 'controller', 'triggerDocumentDelete', 'after')) return true;
 			if(!$oModuleModel->getTrigger('trackback.deleteTrackback', 'nspam', 'controller', 'triggerDeleteTrackback', 'after')) return true;
 
+			// 2010. 11. 09 보관 글 목록에 사전 정보 추가 사항 체크.
+			if (!$oDB->isColumnExists("nspam_keep", "detected")) return true;
+			if (!$oDB->isColumnExists("nspam_keep", "dict_id")) return true;
+			if (!$oDB->isColumnExists("nspam_keep", "spam_string")) return true;
+			if (!$oDB->isColumnExists("nspam_keep", "score")) return true;
+
 			return false;
 		}
 
@@ -76,6 +82,15 @@
 			if(!$oModuleModel->getTrigger('trackback.deleteTrackback', 'nspam', 'controller', 'triggerDeleteTrackback', 'after')){
 				$oModuleController->insertTrigger('trackback.deleteTrackback', 'nspam', 'controller', 'triggerDeleteTrackback', 'after');
 			}
+
+
+			 
+			// 2010. 11. 09 보관 글 목록에 사전 정보 추가 사항 체크.
+			if (!$oDB->isColumnExists("nspam_keep", "detected")) $oDB->addColumn('nspam_keep', "detected", "char", 1);
+			if (!$oDB->isColumnExists("nspam_keep", "dict_id"))  $oDB->addColumn('nspam_keep', "dict_id", "varchar", 10);
+			if (!$oDB->isColumnExists("nspam_keep", "spam_string"))  $oDB->addColumn('nspam_keep', "spam_string", "text");
+			if (!$oDB->isColumnExists("nspam_keep", "score")) $oDB->addColumn('nspam_keep', "score", "number", 3);
+
  
 			return new Object(0, 'success_updated');
 		}

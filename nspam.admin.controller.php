@@ -42,7 +42,6 @@
 				}
 			}
 
-			$obj->score_delete_content = $vars->score_delete_content;
 			$obj->score_trash_content = $vars->score_trash_content;
 			$obj->score_denied_ip = $vars->score_denied_ip;
 			$obj->score_denied_user = $vars->score_denied_user;
@@ -406,6 +405,8 @@
 			$filters = $oNspamModel->getUseSpamFilters($type);
 			if($filters) $oReq->addSpamFilters($filters);
 			$dics = $oNspamModel->getUseSpamDics($type);
+			
+
 			if($dics) $oReq->addSpamDics($dics);
 
 			// load document
@@ -440,7 +441,8 @@
 				
 				// 글을 쓴 회원의 member_srl
 				$author_srl = $oDocumentList[$i+1]->variables['member_srl'];
-				$output = $oNspamController->doSpamBatchProcess($obj, $item->score, $type, $author_srl);
+
+				$output = $oNspamController->doSpamBatchProcess($obj, $item, $type, $author_srl);
 			}
 		}
 
@@ -523,8 +525,6 @@
 				$author_srl = $oCommentList[$i+1]->variables['member_srl'];
 				
 				$output = $oNspamController->doSpamBatchProcess($obj, $item->score, $type, $author_srl);
-				
-				//$output = $oNspamController->doSpamProcess($obj, $item->score, $type);
 			}
 		}
 
@@ -632,6 +632,5 @@
 
 			$this->add('score',$item->score);
 		}
-
 	}
 ?>
