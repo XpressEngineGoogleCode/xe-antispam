@@ -4,7 +4,7 @@
         <node target="score_delete_content" required="true" maxlength="3" filter="check_score" />
         <node target="score_trash_content" required="true" maxlength="3" filter="check_score" />
         <node target="score_denied_ip" required="true" maxlength="3" filter="check_score" />
-        <node target="score_denied_user" required="true" maxlength="3" filter="check_score" />
+        <node target="score_deny_user" required="true" maxlength="3" filter="check_score" />
     </form>
     <parameter />
     <response>

@@ -99,7 +99,7 @@
 			//$nspam_config->score_delete_content = $nspam_config->score_delete_content ? $nspam_config->score_delete_content : 100;
 			$nspam_config->score_trash_content = $nspam_config->score_trash_content ? $nspam_config->score_trash_content : 100;
 			$nspam_config->score_denied_ip = $nspam_config->score_denied_ip ? $nspam_config->score_denied_ip :100;
-			$nspam_config->score_denied_user = $nspam_config->score_denied_user ? $nspam_config->score_denied_user : 100;
+			$nspam_config->score_deny_user = $nspam_config->score_deny_user ? $nspam_config->score_deny_user : 100;
 
 			Context::set('nspam_config',$nspam_config);
 		}

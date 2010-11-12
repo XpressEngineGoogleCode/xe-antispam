@@ -44,7 +44,7 @@
 
 			$obj->score_trash_content = $vars->score_trash_content;
 			$obj->score_denied_ip = $vars->score_denied_ip;
-			$obj->score_denied_user = $vars->score_denied_user;
+			$obj->score_deny_user = $vars->score_deny_user;
 			$obj->module_apply = $vars->module_apply=='allow'?'allow':'deny';
 
 			$target_module = explode(',',$vars->target_module);
@@ -193,7 +193,7 @@
 			$srls = Context::get('srls');
 			$srls = explode(',',$srls);
 			if(count($srls)<1) return new Object(-1,'msg_invalid_request');
-			
+
 			$output = $this->requestPutSpamContents($srls,$type);
 		}
 
@@ -402,7 +402,10 @@
 			// request init
 			$oReq = new RequestGetSpamScores();
 
+			// 사용 중인 스팸 필터 정보를 읽어와 설정
 			$filters = $oNspamModel->getUseSpamFilters($type);
+			if (!$filters || count(filters) < 1) return new Object(-1, 'msg_no_spamfilter_specified');
+				
 			if($filters) $oReq->addSpamFilters($filters);
 			$dics = $oNspamModel->getUseSpamDics($type);
 			
@@ -474,6 +477,8 @@
 			$oReq = new RequestGetSpamScores();
 
 			$filters = $oNspamModel->getUseSpamFilters($type);
+			if (!$filters || count($filters) < 1) return new Object(-1, 'msg_no_spamfilter_specified');
+
 			if($filters) $oReq->addSpamFilters($filters);
 			$dics = $oNspamModel->getUseSpamDics($type);
 			if($dics) $oReq->addSpamDics($dics);
@@ -513,7 +518,8 @@
 			$output = $oReq->request();
 			if(!$output || $output->error != 0 || !$output->scores || !$output->scores->item) return new Object(-1,'msg_spamapi_error');
 
-			$items = $output->scores->item;
+			// $items 와 $oCommentList 의 순서를 맞추기 위해 리버스
+			$items = array_reverse($output->scores->item);
 			foreach($items as $i => $item){
 				if($item->score < 1) continue;
 
@@ -524,7 +530,7 @@
 				// 글을 쓴 회원의 member_srl
 				$author_srl = $oCommentList[$i+1]->variables['member_srl'];
 				
-				$output = $oNspamController->doSpamBatchProcess($obj, $item->score, $type, $author_srl);
+				$output = $oNspamController->doSpamBatchProcess($obj, $item, $type, $author_srl);
 			}
 		}
 
@@ -546,28 +552,36 @@
 			if(!$config || $config->use_nspam!='Y') return new Object(-1,'msg_dont_use_nspam');
 
 			$filters = $oNspamModel->getUseSpamFilters($type);
+			if (!$filters || count($filters) < 1) return new Object(-1, 'msg_no_spamfilter_specified');
+
 			$dics = $oNspamModel->getUseSpamDics($type);
 
 			$oReq = new RequestGetSpamScores();
 			if($filters) $oReq->addSpamFilters($filters);
 			if($dics) $oReq->addSpamDics($dics);
 
+			$member_srls = array();
+
 			if($type=='document'){
 
 				$oDocumentModel = &getModel('document');
-				$document_list = $oDocumentModel->getDocuments($srls,true,false);
+				//$document_list = $oDocumentModel->getDocuments($srls,true,false);
+				$obj_list = $oDocumentModel->getDocuments($srls,true,false);
 
-				foreach($document_list as $k => $oDocument){
+				foreach($obj_list as $k => $oDocument){
 					$oReq->addContent($oDocument->document_srl,$oDocument->get('content'),$oDocument->get('title'),$oDocument->get('ipaddress'),zdate($oDocument->get('regdate'), 'Y-m-d H:i:s'));
+					$member_srls[$oDocument->document_srl] = $oDocument->get('member_srl');
 				}
 
 			}else if($type=='comment'){
 
 				$oCommentModel = &getModel('comment');	
-				$oCommentList = $oCommentModel->getComments($srls);
+				//$oCommentList = $oCommentModel->getComments($srls);
+				$obj_list = $oCommentModel->getComments($srls);
 
-				foreach($oCommentList as $i => $oComment){
+				foreach($obj_list as $i => $oComment){
 					$oReq->addContent($oComment->comment_srl, $oComment->get('content'),'',$oComment->get('ipaddress'), zdate($oComment->get('regdate'), 'Y-m-d H:i:s'));
+					$member_srls[$oComment->comment_srl] = $oComment->get('member_srl');
 				}
 
 			}else if($type=='trackback'){
@@ -582,13 +596,15 @@
 				}
 
 			}
-			
+		
+
 			$output = $oReq->request();
 			if(!$output || $output->error != 0 || !$output->scores || !$output->scores->item) return new Object(-1,'msg_spamapi_error');
 
 			$oNspamController = &getController('nspam');
 
 			$items = $output->scores->item;
+
 			foreach($items as $i => $item){
 				if($item->score < 1) continue;
 
@@ -602,8 +618,8 @@
 				}else if($type=='trackback'){
 					$obj->trackback_srl = $item->id;
 				}
-
-				$output = $oNspamController->doSpamProcess($obj, $item->score, $type);
+				
+				$output = $oNspamController->doSpamBatchProcess($obj, $item, $type, $member_srls[$item->id]);
 			}
 		}
 

@@ -101,7 +101,7 @@
 
 	<br />
 			<strong>- 계정 사용 중지 : </strong>
-				<input type="text" name="score_denied_user" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_denied_user}" />이상이면 글쓴이의 계정을 사용 중지 합니다.
+				<input type="text" name="score_deny_user" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_deny_user}" />이상이면 글쓴이의 계정을 사용 중지 합니다.
 			<p>빈 칸에는 '1 ~ 100' 사이의 숫자를 입력하세요. 숫자는 '스팸 지수(스팸일 확률)'를 의미 합니다.</p>
 		</td>
 	</tr>
@@ -119,5 +119,5 @@ if(typeof(xe.lang) == 'undefined') xe.lang = {};
 xe.lang.score_deleteContent = '{$lang->score_delete_content}';
 xe.lang.score_trashContent = '{$lang->score_trash_content}';
 xe.lang.score_deniedIP = '{$lang->score_denied_ip}';
-xe.lang.score_deniedUser = '{$lang->score_denied_user}';
+xe.lang.score_deniedUser = '{$lang->score_deny_user}';
 </script>

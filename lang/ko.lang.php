@@ -14,6 +14,7 @@
 	$lang->msg_dont_use_nspam = '현재 스팸공동대응 API를 사용하지 않도록 설정되어 있습니다.';
 	$lang->msg_spamapi_error = 'API 에러입니다.';
 	$lang->msg_spam_comment = '스팸으로 판단되어 블라인드 처리되었습니다.';
+	$lang->msg_no_spamfilter_specified = '스팸 필터가 지정되지 않았습니다. 스팸 필터를 지정해 주세요.';
 
 	$lang->dictionary_detected = '스팸사전 일치 여부';
 	$lang->dictionary_id = '스팸사전 번호';

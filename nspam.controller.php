@@ -174,7 +174,7 @@
 			
 			// 로그인되어 있으면 계정 차단, 비로그인이면 아이피 차단
 			if ($is_logged) {
-				if ($config->score_denied_user <= $score) 
+				if ($config->score_deny_user <= $score) 
 					array_push($return,'denied_user');
 
 			} else {
@@ -226,7 +226,7 @@
 				if($act=='denied_ip'){
 				  $this->giveWarning();
 				}else if($act=='denied_user'){
-					$this->deniedUser();
+					$this->denyUser();
 				}else if($act=='trash'){
 					$this->trashObject($obj, $type, $result);
 					return new Object(-1,'msg_trash_content');
@@ -240,13 +240,12 @@
 		function doSpamBatchProcess($obj, $result, $type, $author_srl) {
 
 			$action_list = $this->getAction($result->score, $type);
-	
 
 			foreach($action_list as $k => $act){
 				if($act=='denied_ip'){
 				  $this->giveWarning();
 				}else if($act=='denied_user'){
-					$this->deniedUser($author_srl);
+					$this->denyUser($author_srl);
 				}else if($act=='trash'){
 					$this->trashObject($obj, $type, $result);
 				}
@@ -323,7 +322,7 @@
 		/**
 		 * @brief 로그인 된 사용자일 경우 사용자 차단 처리, 사용자가 지정되어 있을 경우 해당 사용자를 차단.
 		 */
-		function deniedUser($member_srl=NULL) {
+		function denyUser($member_srl=NULL) {
 			$is_logged = Context::get('is_logged');
 
 			if  ($is_logged) {
@@ -393,7 +392,7 @@
 				// 스팸사전에서 필터된 결과 저장
 				if ($result->dictionary_result && $result->dictionary_result != "") {
 					$vars->detected = $result->dictionary_result->detect == 'true' ? 'Y':'N';
-					$vars->dict_id = $result->dictionary_result->id;
+					$vars->dict_id = $result->dictionary_result->dictionary_id;
 					$vars->spam_string = $result->dictionary_result->spam_string;
 				}
 				$vars->score = $result->score;
