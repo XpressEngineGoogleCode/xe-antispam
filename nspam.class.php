@@ -51,6 +51,7 @@
 			if (!$oDB->isColumnExists("nspam_keep", "dict_id")) return true;
 			if (!$oDB->isColumnExists("nspam_keep", "spam_string")) return true;
 			if (!$oDB->isColumnExists("nspam_keep", "score")) return true;
+			if (!$oDB->isColumnExists("nspam_denied_ip", "warn_count")) return true;
 
 			return false;
 		}
@@ -90,8 +91,7 @@
 			if (!$oDB->isColumnExists("nspam_keep", "dict_id"))  $oDB->addColumn('nspam_keep', "dict_id", "varchar", 10);
 			if (!$oDB->isColumnExists("nspam_keep", "spam_string"))  $oDB->addColumn('nspam_keep', "spam_string", "text");
 			if (!$oDB->isColumnExists("nspam_keep", "score")) $oDB->addColumn('nspam_keep', "score", "number", 3);
-
- 
+			if (!$oDB->isColumnExists("nspam_denied_ip", "warn_count")) $oDB->addColumn('nspam_denied_ip','warn_count','number',3, 3 ,true);
 			return new Object(0, 'success_updated');
 		}
 
