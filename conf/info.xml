@@ -5,8 +5,8 @@
 		스팸공동대응 API를 통해 스팸글, 스팸댓글 및 스패머를 차단합니다.
 		스팸 지수를 설정하여 점수가 초과하는 글을 스팸으로 분류하고, 점수가 초과하는 글이나 댓글을 3회 이상 등록할 시 IP가 차단됩니다.
 	</description>
-    <version>1.1</version>
-    <date>2010-11-04</date>
+    <version>1.2</version>
+    <date>2010-11-17</date>
     <category>accessory</category>
     <author email_address="developers@xpressengine.com">
 		<name xml:lang="ko">nhn</name>
