@@ -126,13 +126,13 @@ function deleteKeepObjects(){
 	}
 }
 
-function sendSpamContents(type){
+function sendSpamContents(type, msg_no_article_selected){
 	var srls = []
 	jQuery('input.check_content_srl:checked').each(function(){
 		srls.push(jQuery(this).val());
 	});
 	
-	if(srls.length<1) return;
+	if(srls.length<1) return alert(msg_no_article_selected);
 
 	srls = srls.join(',');
     var params = new Array();
@@ -145,13 +145,13 @@ function sendSpamContents(type){
     exec_xml('nspam', 'procNspamAdminPutSpamContents', params, completeReload, response_tags);
 }
 
-function doSpamProccess(type){
+function doSpamProccess(type, msg_no_article_selected){
 	var srls = []
 	jQuery('input.check_content_srl:checked').each(function(){
 		srls.push(jQuery(this).val());
 	});
 	
-	if(srls.length<1) return;
+	if(srls.length<1) return alert(msg_no_article_selected);
 
 	srls = srls.join(',');
     var params = new Array();
@@ -242,6 +242,10 @@ function testGetSpamScore(){
 
     exec_xml('nspam', 'procNspamAdminTestGetSpamScore', params, function(ret_obj){ alert(ret_obj['score']);}, response_tags);
 
+}
+
+function checkSpamConfig(message){
+	alert(message);
 }
 
 function doSpamProccessAllDocument(page) {

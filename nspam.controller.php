@@ -432,6 +432,14 @@
 				$vars->nspam_keep_srl = $obj->comment_srl;
 				$vars->type = $type;
 				$vars->data = serialize($obj);
+				
+				// 스팸사전에서 필터된 결과 저장
+				if ($result->dictionary_result && $result->dictionary_result != "") {
+					$vars->detected = $result->dictionary_result->detect == 'true' ? 'Y':'N';
+					$vars->dict_id = $result->dictionary_result->dictionary_id;
+					$vars->spam_string = $result->dictionary_result->spam_string;
+				}
+				$vars->score = $result->score;
 				$output = executeQuery('nspam.insertKeep',$vars);
 
 			}else if($type=='trackback'){
@@ -455,6 +463,14 @@
 				$vars->nspam_keep_srl = $obj->trackback_srl;
 				$vars->type = 'comment';
 				$vars->data = serialize($obj);
+
+				// 스팸사전에서 필터된 결과 저장
+				if ($result->dictionary_result && $result->dictionary_result != "") {
+					$vars->detected = $result->dictionary_result->detect == 'true' ? 'Y':'N';
+					$vars->dict_id = $result->dictionary_result->dictionary_id;
+					$vars->spam_string = $result->dictionary_result->spam_string;
+				}
+				$vars->score = $result->score;
 				$output = executeQuery('nspam.insertKeep',$vars);
 			}
 

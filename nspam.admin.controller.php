@@ -388,7 +388,6 @@
 
 			// load config
 			$config = $oNspamModel->getNspamPartConfig($type);
-			if(!$config || $config->use_nspam!='Y') return new Object(-1,'msg_dont_use_nspam');
 
 			// target module
 			if(is_array($config->target_module) && count($config->target_module)>0){
@@ -402,10 +401,6 @@
 			// request init
 			$oReq = new RequestGetSpamScores();
 
-			// 사용 중인 스팸 필터 정보를 읽어와 설정
-			$filters = $oNspamModel->getUseSpamFilters($type);
-			if (!$filters || count(filters) < 1) return new Object(-1, 'msg_no_spamfilter_specified');
-				
 			if($filters) $oReq->addSpamFilters($filters);
 			$dics = $oNspamModel->getUseSpamDics($type);
 			

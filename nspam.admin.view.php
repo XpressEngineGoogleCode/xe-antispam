@@ -133,6 +133,13 @@
 				$search_option[$this->search_option[$i]] = Context::getLang($this->search_option[$i]);
 			}
 			Context::set('search_option', $search_option);
+
+			$oNspamModel = &getModel('nspam');
+			$filters = $oNspamModel->getUseSpamFilters('document');
+			$config = $oNspamModel->getNspamPartConfig('document');
+
+			if (!$filters || count(filters) < 1) Context::set('no_spamfilter_specified', 'true');
+			if (!$config || $config->use_nspam != 'Y') Context::set('nspam_not_in_use', 'true');
 		}
 
 		function dispNspamAdminDocumentDeclaredList(){
@@ -206,6 +213,14 @@
 			Context::set('page', $output->page);
 			Context::set('comment_list', $output->data);
 			Context::set('page_navigation', $output->page_navigation);
+
+			// 스팸API 사용 여부 및 스팸필터 설정 체크
+			$oNspamModel = &getModel('nspam');
+			$filters = $oNspamModel->getUseSpamFilters('comment');
+			$config = $oNspamModel->getNspamPartConfig('comment');
+
+			if (!$filters || count(filters) < 1) Context::set('no_spamfilter_specified', 'true');
+			if (!$config || $config->use_nspam != 'Y') Context::set('nspam_not_in_use', 'true');
 		}
 
 		function dispNspamAdminCommentDeclaredList(){
@@ -282,6 +297,7 @@
 						$oComment = $oCommentModel->getComment(0);
 						$oComment->setAttribute($data);
 						$v->oComment = $oComment;
+						debugPrint($v);
 					}else if($v->type="trackback"){
 						$v->oTrackback = $data;
 					}

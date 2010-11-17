@@ -27,9 +27,9 @@
 <input type="hidden" name="page" value="{$page}" />
 
 <div class="fr">
-	<span class="button green"><button type="button" onclick="doSpamProccessAllDocument(1)">모든 문서 적용</button></span>
-	<span class="button green"><button type="button" onclick="doSpamProccess('document')">스팸설정 적용</button></span>
-	<span class="button red"><button type="button" onclick="sendSpamContents('document')">스팸신고 및 삭제</button></span>
+	<span class="button green"><button type="button" <!--@if($nspam_not_in_use)-->onclick="checkSpamConfig('{$lang->msg_dont_use_nspam}')"<!--@elseif($no_spamfilter_specified)-->onclick="checkSpamConfig('{$lang->msg_no_spamfilter_specified}')"<!--@else-->onclick="doSpamProccessAllDocument(1)"<!--@end-->>모든 문서 적용</button></span>
+	<span class="button green"><button type="button" <!--@if($nspam_not_in_use)-->onclick="checkSpamConfig('{$lang->msg_dont_use_nspam}')"<!--@elseif($no_spamfilter_specified)-->onclick="checkSpamConfig('{$lang->msg_no_spamfilter_specified}')"<!--@else-->onclick="doSpamProccess('document', '{$lang->msg_no_article_selected}')"<!--@end-->>스팸설정 적용</button></span>
+	<span class="button red"><button type="button" onclick="sendSpamContents('document', '{$lang->msg_no_article_selected}')">스팸신고 및 삭제</button></span>
 </div>
 <!-- 모듈 선택 -->
 <!--

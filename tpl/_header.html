@@ -7,9 +7,9 @@
     <ul class="localNavigation">
         <li <!--@if($act=='dispNspamAdminConfig' || $act=='dispNspamAdminDeniedIPList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminConfig','type','document')}">{$lang->nspam_config}</a></li>
         <li <!--@if($act=='dispNspamAdminDocumentList' || $act=='dispNspamAdminDocumentDeclaredList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminDocumentList')}">{$lang->nspam_document_list}</a></li>
-        <li <!--@if($act=='dispNspamAdminCommentList'||$act=='dispNspamAdminCommentDeclaredList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminCommentList')}">{$lang->comment_list}</a></li>
-        <li <!--@if($act=='dispNspamAdminTrackbackList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminTrackbackList')}">{$lang->trackback_list}</a></li>
-        <li <!--@if($act=='dispNspamAdminKeepList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminKeepList')}">{$lang->spam_keep_list}</a></li>
+        <li <!--@if($act=='dispNspamAdminCommentList'||$act=='dispNspamAdminCommentDeclaredList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminCommentList')}">{$lang->nspam_comment_list}</a></li>
+        <li <!--@if($act=='dispNspamAdminTrackbackList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminTrackbackList')}">{$lang->nspam_trackback_list}</a></li>
+        <li <!--@if($act=='dispNspamAdminKeepList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminKeepList')}">{$lang->nspam_keep_list}</a></li>
     </ul>
 
 <!--@if($act=='dispNspamAdminConfig' || $act=='dispNspamAdminDeniedIPList')-->
@@ -23,14 +23,14 @@
 
 <!--@if($act=='dispNspamAdminDocumentList' || $act=='dispNspamAdminDocumentDeclaredList')-->
     <ul class="childNavigation">
-        <li <!--@if($act=='dispNspamAdminDocumentList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminDocumentList')}">{$lang->document_list}</a></li>
+        <li <!--@if($act=='dispNspamAdminDocumentList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminDocumentList')}">{$lang->nspam_document_list}</a></li>
         <li <!--@if($act=='dispNspamAdminDocumentDeclaredList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminDocumentDeclaredList')}">{$lang->document_declared_list}</a></li>
     </ul>
 <!--@end-->	
 
 <!--@if($act=='dispNspamAdminCommentList' || $act=='dispNspamAdminCommentDeclaredList')-->
     <ul class="childNavigation">
-        <li <!--@if($act=='dispNspamAdminCommentList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminCommentList')}">{$lang->comment_list}</a></li>
+        <li <!--@if($act=='dispNspamAdminCommentList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminCommentList')}">{$lang->nspam_comment_list}</a></li>
         <li <!--@if($act=='dispNspamAdminCommentDeclaredList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminCommentDeclaredList')}">{$lang->comment_declared_list}</a></li>
     </ul>
 <!--@end-->	

@@ -1,7 +1,7 @@
 <?php
 	$lang->comm = '신고 댓글 목록';
 	$lang->comment_declared_list = '신고 댓글 목록';
-	$lang->comment_list = '댓글 목록';
+	$lang->nspam_comment_list = '댓글 목록';
 	$lang->denied_ip = '금지IP';
 	$lang->document_declared_list = '신고 글 목록';
 	$lang->document_trash_list = '휴지통 글 목록';
@@ -15,6 +15,7 @@
 	$lang->msg_spamapi_error = 'API 에러입니다.';
 	$lang->msg_spam_comment = '스팸으로 판단되어 블라인드 처리되었습니다.';
 	$lang->msg_no_spamfilter_specified = '스팸 필터가 지정되지 않았습니다. 스팸 필터를 지정해 주세요.';
+	$lang->msg_no_article_selected = '글 혹은 댓글을 먼저 선택해주세요.';
 
 	$lang->dictionary_detected = '스팸사전 일치 여부';
 	$lang->dictionary_id = '스팸사전 번호';
@@ -23,6 +24,8 @@
 
 	$lang->nspam_config = '설정';
 	$lang->nspam_document_list = '문서 목록';
-	$lang->spam_keep_list = '스팸보관 목록';
-	$lang->trackback_list = '엮인글 목록';
+	$lang->nspam_keep_list = '스팸보관 목록';
+	$lang->nspam_trackback_list = '엮인글 목록';
+
+	$lang->cmd_delete_checked_comment = '선택댓글 삭제';
 ?>
