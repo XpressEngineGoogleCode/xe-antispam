@@ -154,13 +154,13 @@
 				$var->regdate = $obj->regdate;
 
 				$oCommentController = &getController('comment');
-				$output = $oCommentController->insertComment($obj,true);
+				$output = executeQuery('comment.insertComment', $obj);
 				if(!$output || !$output->toBool()) return new Object(-1,'msg_restore_error');
 
 				$output = executeQuery('nspam.updateCommentOrder',$var);
 			}
 
-			$robj->nspam_keep_srl = $var->comment_srl;
+			$robj->nspam_keep_srl = $obj->comment_srl;
 			$output = executeQuery('nspam.deleteKeep',$robj);
 
 			return $output;
@@ -170,14 +170,14 @@
 		 * @brief 보관중인 Trackback 복원
 		 **/
 		function restoreTrackback($obj){
-			$var->list_order = $obj->trackback_srl * -1;
-			$var->regdate = $obj->regdate;
+			$obj->trackback_srl = $obj->list_order * -1;
 
 			$oTrackbackController = &getController('trackback');
-			$output = $oTrackbackController->insertTrackback($obj);
+			$output = executeQuery('trackback.insertTrackback', $obj);
+
 			if(!$output || !$output->toBool()) return new Object(-1,'msg_restore_error');
 
-			$robj->nspam_keep_srl = $var->trackback_srl;
+			$robj->nspam_keep_srl = $obj->trackback_srl;
 			$output = executeQuery('nspam.deleteKeep',$robj);
 			return $output;
 		}

@@ -52,7 +52,7 @@ class RequestGetSpamScores extends RequestSpamApi{
 
 	function addContent($content_id,$content,$title=null,$ip=null,$pubdate=null){
 		if(!$content_id || !$content) return false;
-
+	
 		$obj = new stdClass;
 		$obj->id = $content_id;
 		$obj->title = $title;

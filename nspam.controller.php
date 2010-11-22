@@ -237,6 +237,9 @@
 		}
 
 
+		/**
+		 * @brief 관리자 화면에서의 일괄처리를 실행
+		 */
 		function doSpamBatchProcess($obj, $result, $type, $author_srl) {
 
 			$action_list = $this->getAction($result->score, $type);
@@ -272,7 +275,7 @@
 		}
 
 		/**
-		 *
+		 * @brief IP 차단시의 경고횟수  증가
 		 **/		
 		function increaseWarning($ipaddress=null) {
 			if (!$ipaddress) $ipaddress = $_SERVER['REMOTE_ADDR'];
@@ -285,7 +288,7 @@
 		
 
 		/**
-		 *
+		 * @brief IP 차단을 위한 첫 경고 부여
 		 **/		
 		function giveFirstWarning($ipaddress=null) {
 			if (!$ipaddress) $ipaddress = $_SERVER['REMOTE_ADDR'];
@@ -359,7 +362,135 @@
 			}
 			return new Object();
 		}
+		
+		/**
+		 * @brief 글을 스팸보관함으로 이동함.
+		 */
+		function _trashDocument($obj, $result=NULL) {
 
+			if ($obj->document_srl) {
+
+				$oDocumentModel = &getModel('document');
+				$oDocument = $oDocumentModel->getDocument($obj->document_srl);
+
+				// 현재 존재하는 글일 경우
+				if ($oDocument->isExists()) {
+					
+					$obj = $oDocument->gets('document_srl','module_srl','category_srl','lang_code','is_notice','is_secret','title','title_bold','title_color','content','readed_count','voted_count','blamed_count','comment_count','trackback_count','uploaded_count','password','user_id','user_name','nick_name','member_srl','email_address	homepage','tags','extra_vars','regdate','last_update		last_updater	ipaddress	list_order	update_order	allow_comment','lock_comment','allow_trackback','notify_message');
+
+					$var = new stdClass;
+					$var->document_srl = $obj->document_srl;
+					$output = executeQuery('document.deleteDocument', $var);
+				}
+			} else {
+				$obj->document_srl = getNextSequence();
+			}
+
+			if (!$obj->list_order) 
+				$obj->update_order = $obj->list_order = $obj->document_srl * -1;
+
+			$vars = new stdClass;
+			$vars->nspam_keep_srl = $obj->document_srl;
+			$vars->type = 'document'; 
+			$vars->data = serialize($obj);
+			// 스팸사전에서 필터된 결과 저장
+			if ($result->dictionary_result && $result->dictionary_result != "") {
+				$vars->detected = $result->dictionary_result->detect == 'true' ? 'Y':'N';
+				$vars->dict_id = $result->dictionary_result->dictionary_id;
+				$vars->spam_string = $result->dictionary_result->spam_string;
+			}
+			$vars->score = $result->score;
+			
+			$output = executeQuery('nspam.insertKeep',$vars);
+			return $output;
+
+		}
+
+
+		/**
+		 * @brief 댓글을 스팸보관함으로 이동함.
+		 */
+		function _trashComment($obj, $result=NULL) {
+
+			if($obj->comment_srl){
+				$oCommentModel = &getModel('comment');
+				$oComment = $oCommentModel->getComment($obj->comment_srl);
+				// 이미 댓글이 존재하는 경우
+				if($oComment->isExists()){
+					$obj = $oComment->gets('comment_srl','module_srl','document_srl','parent_srl','is_secret','content','voted_count','blamed_count','notify_message','password','user_id','user_name','nick_name','member_srl','email_address','homepage','uploaded_count','regdate','last_update','ipaddress','list_order');
+
+					// 자식 댓글이 있으면 지울 수 없고, 내용 업데이트
+					if($oCommentModel->getChildCommentCount($obj->comment_srl) > 0){
+						$var = clone($obj);
+						$var->member_srl = 0;
+						$var->content = sprintf('<p class="spam">%s</p>',Context::getLang('msg_spam_comment'));	
+						$output = executeQuery('comment.updateComment',$var);
+
+					}else{
+						$var = new stdClass;
+						$var->comment_srl = $obj->comment_srl;
+
+						$output = executeQuery('comment.deleteComment',$var);
+					}
+
+				}
+			}else{
+				$obj->comment_srl = getNextSequence();
+			}
+
+			if(!$obj->list_order) $obj->list_order = $obj->comment_srl* -1;
+
+			$vars = new stdClass;
+			$vars->nspam_keep_srl = $obj->comment_srl;
+			$vars->type = 'comment';
+			$vars->data = serialize($obj);
+				
+			// 스팸사전에서 필터된 결과 저장
+			if ($result->dictionary_result && $result->dictionary_result != "") {
+				$vars->detected = $result->dictionary_result->detect == 'true' ? 'Y':'N';
+				$vars->dict_id = $result->dictionary_result->dictionary_id;
+				$vars->spam_string = $result->dictionary_result->spam_string;
+			}
+			$vars->score = $result->score;
+			$output = executeQuery('nspam.insertKeep',$vars);
+
+			return $output;
+		}
+
+
+		/**
+		 * @brief 트랙백을 스팸보관함으로 이동함.
+		 */
+		function _trashTrackback($obj, $result=NULL) {
+			if($obj->trackback_srl){
+				$oTrackbackModel = &getModel('trackback');
+				$output = $oTrackbackModel->getTrackback($obj->trackback_srl);
+
+				// 트랙백이 존재하는 경우
+				if($output->data){
+					$obj = clone($output->data);
+					$output = executeQuery('trackback.deleteTrackback',$obj);
+				}
+			}else{
+				if(!$obj->trackback_srl) $obj->trackback_srl = getNextSequence();
+			}
+
+			if(!$obj->list_order) $obj->list_order = $obj->trackback_srl* -1;
+
+			$vars = new stdClass;
+			$vars->nspam_keep_srl = $obj->trackback_srl;
+			$vars->type = 'trackback';
+			$vars->data = serialize($obj);
+
+			// 스팸사전에서 필터된 결과 저장
+			if ($result->dictionary_result && $result->dictionary_result != "") {
+				$vars->detected = $result->dictionary_result->detect == 'true' ? 'Y':'N';
+				$vars->dict_id = $result->dictionary_result->dictionary_id;
+				$vars->spam_string = $result->dictionary_result->spam_string;
+			}
+			$vars->score = $result->score;
+			$output = executeQuery('nspam.insertKeep',$vars);
+		}
 
 		/**
 		 * @brief 스팸으로 판정된 글/댓글을 보관함으로 옮김.
@@ -367,82 +498,11 @@
 		function trashObject($obj, $type='document', $result=NULL){
 
 			if($type=='document'){
-				if($obj->document_srl){
-					$oDocumentModel = &getModel('document');
-					$oDocument = $oDocumentModel->getDocument($obj->document_srl);
-
-					// 이미 존재 하는 글이면 
-					if($oDocument->isExists()){
-						$obj = $oDocument->gets('document_srl','module_srl','category_srl','lang_code','is_notice','is_secret','title','title_bold','title_color','content','readed_count','voted_count','blamed_count','comment_count','trackback_count','uploaded_count','password','user_id','user_name','nick_name','member_srl','email_address	homepage','tags','extra_vars','regdate','last_update		last_updater	ipaddress	list_order	update_order	allow_comment','lock_comment','allow_trackback','notify_message');
-
-						$var = new stdClass;
-						$var->document_srl = $obj->document_srl;
-						$output = executeQuery('document.deleteDocument',$var);
-					}
-				}else{
-					$obj->document_srl = getNextSequence();
-				}
-
-				if(!$obj->list_order) $obj->update_order = $obj->list_order = $obj->document_srl* -1;
-				
-				$vars = new stdClass;
-				$vars->nspam_keep_srl = $obj->document_srl;
-				$vars->type = $type;
-				$vars->data = serialize($obj);
-				// 스팸사전에서 필터된 결과 저장
-				if ($result->dictionary_result && $result->dictionary_result != "") {
-					$vars->detected = $result->dictionary_result->detect == 'true' ? 'Y':'N';
-					$vars->dict_id = $result->dictionary_result->dictionary_id;
-					$vars->spam_string = $result->dictionary_result->spam_string;
-				}
-				$vars->score = $result->score;
-				
-				$output = executeQuery('nspam.insertKeep',$vars);
-
+				$output = $this->_trashDocument($obj, $result);
 			}else if($type=='comment'){
-				if($obj->comment_srl){
-					$oCommentModel = &getModel('comment');
-					$oComment = $oCommentModel->getComment($obj->comment_srl);
-					// 이미 댓글이 존재하는 경우
-					if($oComment->isExists()){
-						$obj = $oComment->gets('comment_srl','module_srl','document_srl','parent_srl','is_secret','content','voted_count','blamed_count','notify_message','password','user_id','user_name','nick_name','member_srl','email_address','homepage','uploaded_count','regdate','last_update','ipaddress','list_order');
-
-						// 자식 댓글이 있으면 지울 수 없고, 내용 업데이트
-						if($oCommentModel->getChildCommentCount($obj->comment_srl) > 0){
-							$var = clone($obj);
-							$var->member_srl = 0;
-							$var->contnet = sprintf('<p class="spam">%</p>',Context::getLang('msg_spam_comment'));	
-							$output = executeQuery('comment.updateComment',$var);
-
-						}else{
-							$var = new stdClass;
-							$var->comment_srl = $obj->comment_srl;
-
-							$output = executeQuery('comment.deleteComment',$var);
-						}
-
-					}
-				}else{
-					$obj->comment_srl = getNextSequence();
-				}
-
-				if(!$obj->list_order) $obj->list_order = $obj->comment_srl* -1;
-
-				$vars = new stdClass;
-				$vars->nspam_keep_srl = $obj->comment_srl;
-				$vars->type = $type;
-				$vars->data = serialize($obj);
-				
-				// 스팸사전에서 필터된 결과 저장
-				if ($result->dictionary_result && $result->dictionary_result != "") {
-					$vars->detected = $result->dictionary_result->detect == 'true' ? 'Y':'N';
-					$vars->dict_id = $result->dictionary_result->dictionary_id;
-					$vars->spam_string = $result->dictionary_result->spam_string;
-				}
-				$vars->score = $result->score;
-				$output = executeQuery('nspam.insertKeep',$vars);
-
+				$output = $this->_trashComment($obj, $result);
 			}else if($type=='trackback'){
+			/*
 				if($obj->trackback_srl){
 				
 					$oTrackbackModel = &getModel('trackback');
@@ -471,9 +531,11 @@
 					$vars->spam_string = $result->dictionary_result->spam_string;
 				}
 				$vars->score = $result->score;
-				$output = executeQuery('nspam.insertKeep',$vars);
-			}
+				$output = executeQuery('nspam.insertKeep',$vars);*/
+				debugPrint($result);
+				$output = $this->_trashTrackback($obj, $result);
 
+			}
 			return $output;
 		}
 	}

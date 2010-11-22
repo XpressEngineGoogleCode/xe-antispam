@@ -41,9 +41,9 @@ class RequestSpamApi extends Object{
 		$req = new stdClass;
 		$req->methodcall = new stdClass;
 		$req->methodcall->params = $obj;
-
 		$str = json_encode2($req);
 		$str = str_replace(array("\r\n","\n","\t"),array('\n','\n','\t'),$str);
+		//$str = str_replace(array("\r\n","\n","\t"),array('','',''),$str);
 
 		return $str;
 	}
