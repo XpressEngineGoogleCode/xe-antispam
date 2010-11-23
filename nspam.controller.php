@@ -174,15 +174,13 @@
 			
 			// 로그인되어 있으면 계정 차단, 비로그인이면 아이피 차단
 			if ($is_logged) {
-				if ($config->score_deny_user <= $score) 
+				if (($config->score_deny_user <= $score || $config->score_denied_user <= $score) && $config->use_deny_user == 'Y') 
 					array_push($return,'denied_user');
-
 			} else {
-				if ($config->score_denied_ip <= $score) 
+				if ($config->score_denied_ip <= $score && $config->use_deny_ip == 'Y') 
 					array_push($return, 'denied_ip');
 			}
-			if ($config->score_trash_content <= $score) array_push($return, 'trash');
-
+			if ($config->score_trash_content <= $score && $config->use_trash_content == 'Y') array_push($return, 'trash');
 			return $return;
 		}
 

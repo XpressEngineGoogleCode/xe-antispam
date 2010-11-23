@@ -297,7 +297,6 @@
 						$oComment = $oCommentModel->getComment(0);
 						$oComment->setAttribute($data);
 						$v->oComment = $oComment;
-						debugPrint($v);
 					}else if($v->type="trackback"){
 						$v->oTrackback = $data;
 					}

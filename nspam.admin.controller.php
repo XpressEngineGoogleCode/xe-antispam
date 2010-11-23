@@ -42,8 +42,11 @@
 				}
 			}
 
+			$obj->use_trash_content = $vars->use_trash_content == 'Y'?'Y':'N';
 			$obj->score_trash_content = $vars->score_trash_content;
+			$obj->use_deny_ip = $vars->use_deny_ip == 'Y'?'Y':'N';
 			$obj->score_denied_ip = $vars->score_denied_ip;
+			$obj->use_deny_user = $vars->use_deny_user == 'Y'?'Y':'N';
 			$obj->score_deny_user = $vars->score_deny_user;
 			$obj->module_apply = $vars->module_apply=='allow'?'allow':'deny';
 
