@@ -224,7 +224,7 @@
 
 			foreach($action_list as $k => $act){
 				if($act=='denied_ip'){
-				  $this->giveWarning();
+				 // $this->giveWarning();
 				}else if($act=='denied_user'){
 					$this->denyUser();
 				}else if($act=='trash'){
@@ -309,7 +309,6 @@
 			$oNspamModel = &getModel('nspam');
 			$output = $oNspamModel->hasWarning($ipaddress);
 
-
 			if ($output) {
 				$args->ipaddress = $ipaddress;
 				$args->warn_count = 3;
@@ -326,41 +325,32 @@
 		 * @brief 로그인 된 사용자일 경우 사용자 차단 처리, 사용자가 지정되어 있을 경우 해당 사용자를 차단.
 		 */
 		function denyUser($member_srl=NULL) {
-			$is_logged = Context::get('is_logged');
+			$logged_info = Context::get('logged_info');
+			if(!$logged_info) return new Object();
 
-			if  ($is_logged) {
-				$vars = new stdClass;
-				$target_user = NULL;
+			// member_srl 이 지정된 경우 해당 사용자 차단
+			// 아닌 경우, 로그인된 사용자를 차단.
 
-				// member_srl 이 지정된 경우 해당 사용자 차단
-				// 아닌 경우, 로그인된 사용자를 차단.
-				if (!$member_srl) {
-					$logged_info = Context::get('logged_info');
-					$target_user = $logged_info->member_srl;
-				} else {
-					$target_user = $member_srl;
-				}
-				$vars->member_srl = $target_user;
+			$args->member_srl = $member_srl;
+			if(!$args->member_srl) $args->member_srl = $logged_info->member_srl;
 
-				// 차단 대상 회원이 관리자이거나 이미 차단당했다면 차단하지 않음
-				$usr_info = executeQuery('member.getMemberInfoByMemberSrl', $vars);
-				if ($usr_info->data->is_admin == 'Y' || $usr_info->data->denied == 'Y') return new Object();
+			// 차단 대상 회원이 관리자이거나 이미 차단당했다면 차단하지 않음
+			$output = executeQuery('member.getMemberInfoByMemberSrl', $args);
+			if ($output->data->is_admin == 'Y' || $output->data->denied == 'Y') return new Object();
+			$desc = $output->data->description;
 
-				// 차단 조치
-				$output = executeQuery('nspam.updateDeniedMember',$vars);
 
-				// 차단 대상 회원 description 에 차단 사유 및 시간을 등록
-				$date = date("Y.m.d G:i:s");
-				$new_desc = $date."에 스팸등록으로 차단되었습니다.\n".$usr_info->data->description;
+			// 차단 조치
+			$output = executeQuery('nspam.updateDeniedMember',$args);
+			if(!$output->toBool()) return $output;
 
-				unset($vars);
-				$vars = new stdClass;
-				$vars->member_srl = $target_user;
-				$vars->description = $new_desc;
-				$opt = executeQuery('member.updateMember', $vars);
-				return $output;
-			}
-			return new Object();
+			// 차단 대상 회원 description 에 차단 사유 및 시간을 등록
+			$desc = date("Y.m.d H:i:s") ." 스팸공동대응API로 차단되었습니다.\n".$desc;
+
+			$args->description = $desc;
+			$output2 = executeQuery('member.updateMember', $args);
+
+			return $output;
 		}
 		
 		/**
@@ -532,7 +522,6 @@
 				}
 				$vars->score = $result->score;
 				$output = executeQuery('nspam.insertKeep',$vars);*/
-				debugPrint($result);
 				$output = $this->_trashTrackback($obj, $result);
 
 			}
