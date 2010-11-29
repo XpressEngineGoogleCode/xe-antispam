@@ -1,0 +1,54 @@
+<!--%import("filter/delete_denied_member.xml")-->
+
+<!--#include("_header.html")-->
+
+<!-- xml js filter를 이용하기 위한 데이터 전달용 form -->
+<form id="fo_denied_member" action="./" method="get">
+<input type="hidden" name="member_srl" value="" />
+</form>
+
+<!-- 목록 -->
+<form action="./" method="get" onsubmit="return procFilter(this, delete_denied_member)">
+<table cellspacing="0" class="rowTable">
+<caption>Total{count($denied_member_list)}</caption>
+<thead>
+    <tr>
+        <th scope="col"><div>{$lang->no}</div></th>
+		<th><div><input type="checkbox" onclick="XE.checkboxToggleAll({ doClick:true }); return false;" /></div></th>
+        <th scope="col"><div>{$lang->user_id}</div></th>
+        <th scope="col"><div>{$lang->user_name}</div></th>
+        <th scope="col"><div>{$lang->nick_name}</div></th>
+		<th scope="col">{$lang->spamscore}</th>
+		<th scope="col">{$lang->dictionary_detected}</th>
+		<th scope="col">{$lang->dictionary_id}</th>
+		<th scope="col">{$lang->matched_word}</th>
+		<th scope="col"><div>차단일시</div></th>
+		<th scope="col"><div>{$lang->cmd_delete}</div></th>
+    </tr>
+</thead>
+<tbody>
+    <!--@foreach($denied_member_list as $no => $val)-->
+    <tr class="row{$cycle_idx}">
+        <td>{count($denied_member_list)-$no}</td>
+		<td><input type="checkbox" class="check_member_srl" name="cart" value="{$val->member_srl}" /></td>
+        <td>{$val->user_id}</td>
+		<td>{$val->user_name}</td>
+		<td>{$val->nick_name}</td>
+		<td>{$val->score}</td>
+		<td>{$val->detected}</td>
+		<td>{$val->dict_id}</td>
+		<td>{$val->spam_string}</td>
+        <td>{zdate($val->regdate,"Y-m-d H:m:d")}</td>
+        <td><a href="#" onclick="doDeleteDeniedMember('{$val->member_srl}');return false;" title="{$lang->cmd_delete}" class="buttonSet buttonDelete"><span>{$lang->cmd_delete}</span></a></td>
+    </tr>
+    <!--@end-->
+</tbody>
+<tfoot>
+	<tr>
+		<th colspan="11" class="button">
+            <span class="button black strong"><button type="button" onclick="doDeleteDeniedMembers()">{$lang->cmd_delete}</button></span>
+		</th>
+	</tr>
+</tfoot>
+</table>
+</form>

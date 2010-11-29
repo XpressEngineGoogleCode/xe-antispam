@@ -1,0 +1,77 @@
+<!--#include("_header.html")-->
+
+<form id="fo_list" action="">
+<input type="hidden" name="page" value="{$page}" />
+
+<!-- 목록 -->
+<table cellspacing="0" class="rowTable clear">
+<caption>Total {number_format($total_count)}, Page {number_format($page)}/{number_format($total_page)}</caption>
+<thead>
+    <tr>
+        <th scope="col"><div>{$lang->no}</div></th>
+        <th scope="col"><div>{$lang->type}</div></th>
+        <th scope="col"><div>{$lang->writer}</div></th>
+        <th scope="col" class="wide"><div>{$lang->document}</div></th>
+		<th scope="col">{$lang->spamscore}</th>
+		<th scope="col">{$lang->dictionary_detected}</th>
+		<th scope="col">{$lang->dictionary_id}</th>
+		<th scope="col">{$lang->matched_word}</th>
+        <th scope="col">{$lang->regdate}</th>
+    </tr>
+</thead>
+<tbody>
+<!--@if($keep_list)-->
+    <!--@foreach($keep_list as $no => $keep)-->
+    <tr>
+        <td class="number center">{$no}</td>
+		<!--@if($keep->type == 'document')-->
+			<td class="center">{$lang->document}</td>
+			{@$oDocument = $keep->oDocument}
+			<td class="nowrap"><span class="member_{$oDocument->get('member_srl')}">{$oDocument->getNickName()}</span></td>
+			<td class="left subject">
+				<strong>{$oDocument->getTitleText(50)}</strong>
+				{$oDocument->getContentText(100)}
+			</td>
+
+		<!--@elseif($keep->type == 'comment')-->
+			<td class="center">{$lang->comment}</td>
+			{@$oComment = $keep->oComment}
+			<td class="nowrap"><span class="member_{$oComment->get('member_srl')}">{$oComment->getNickName()}</span></td>
+			<td class="left subject">
+				{$oComment->getContentText(100)}
+			</td>
+		<!--@elseif($keep->type == 'trackback')-->
+			<td class="center">{$lang->trackback}</td>
+			{@$oTrackback = $keep->oTrackback}
+			<td class="nowrap">{$oTrackback->blog_name}</td>
+			<td class="left subject">
+				<strong>{$oTrackback->title}</strong>
+				{$oTrackback->excerpt}
+			</td>
+
+		<!--@end-->
+		<td class="center">{$keep->score}</td>
+		<td class="center">{$keep->detected}</td>
+		<td class="center">{$keep->dict_id}</td>
+		<td class="center">{$keep->spam_string}</td>
+        <td class="center">{zdate($keep->regdate,'Y.m.d H:i')}</td>
+    </tr>
+    <!--@end-->
+<!--@end-->
+</tbody>
+</table>
+
+</form>
+
+<!-- 페이지 네비게이션 -->
+<div class="pagination a1">
+    <a href="{getUrl('page','','module_srl',$module_srl)}" class="prevEnd">{$lang->first_page}</a> 
+    <!--@while($page_no = $page_navigation->getNextPage())-->
+        <!--@if($page == $page_no)-->
+            <strong>{$page_no}</strong> 
+        <!--@else-->
+            <a href="{getUrl('page',$page_no,'module_srl',$module_srl)}">{$page_no}</a> 
+        <!--@end-->
+    <!--@end-->
+    <a href="{getUrl('page',$page_navigation->last_page,'module_srl',$module_srl)}" class="nextEnd">{$lang->last_page}</a>
+</div>

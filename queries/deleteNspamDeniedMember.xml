@@ -1,0 +1,8 @@
+<query id="deleteNspamDeniedMember" action="delete">
+    <tables>
+        <table name="nspam_denied_member" />
+    </tables>
+    <conditions>
+        <condition operation="equal" column="member_srl" var="member_srl" notnull="notnull" />
+    </conditions>
+</query>
