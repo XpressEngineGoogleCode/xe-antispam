@@ -72,6 +72,35 @@
 
 		}
 
+		function getMemberListDeniedByNspam() {
+
+			$args->sort_index = "regdate";
+			$args->page = Context::get('page')?Context::get('page'):1;
+
+			//member 테이블엔 이미 차단해제 된 회원은 제거할 필요 있음.
+			$output = executeQuery('nspam.getNspamMemberNotYetRemovedList');
+			
+			if ($output->data) {
+				if (!is_array($output->data)) {
+					$not_yet_removed = array($output->data);
+				} else {
+					$not_yet_removed = $output->data;
+				}
+
+				foreach ($not_yet_removed as $key => $val) {
+					$args->member_srl = $val->member_srl;
+					executeQuery('nspam.deleteNspamDeniedMember', $args);
+				}
+			}
+
+			$output = executeQuery('nspam.getNspamMemberList', $args);
+
+			if (!$output->data) return;
+			if (!is_array($output->data)) return array($output->data);
+
+			return $output->data;
+		}
+
 
 
 		/**

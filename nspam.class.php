@@ -53,6 +53,17 @@
 			if (!$oDB->isColumnExists("nspam_keep", "score")) return true;
 			if (!$oDB->isColumnExists("nspam_denied_ip", "warn_count")) return true;
 
+			// 2010. 11. 26 모듈차단회원 목록 및 보관함 정보 추가 사항 체크.
+			if (!$oDB->isTableExists("nspam_denied_member")) return true;
+			if (!$oDB->isColumnExists("nspam_keep", "by_trigger")) return true;
+
+			// 2010. 11. 29 모듈차단회원 목록 및 문서/댓글목록 정보 추가 체크.
+			if (!$oDB->isTableExists("nspam_item_list")) return true;
+			if (!$oDB->isColumnExists("nspam_denied_member", "detected")) return true;
+			if (!$oDB->isColumnExists("nspam_denied_member", "dict_id")) return true;
+			if (!$oDB->isColumnExists("nspam_denied_member", "spam_string")) return true;
+			if (!$oDB->isColumnExists("nspam_denied_member", "score")) return true;
+
 			return false;
 		}
 
@@ -92,6 +103,19 @@
 			if (!$oDB->isColumnExists("nspam_keep", "spam_string"))  $oDB->addColumn('nspam_keep', "spam_string", "text");
 			if (!$oDB->isColumnExists("nspam_keep", "score")) $oDB->addColumn('nspam_keep', "score", "number", 3);
 			if (!$oDB->isColumnExists("nspam_denied_ip", "warn_count")) $oDB->addColumn('nspam_denied_ip','warn_count','number',3, 3 ,true);
+
+
+			// 2010. 11. 26 모듈차단회원 목록 및 보관함 정보 추가사항 체크.
+			if (!$oDB->isTableExists("nspam_denied_member")) $oDB->createTableByXmlFile("nspam_denied_member");
+			if (!$oDB->isColumnExists("nspam_keep", "by_trigger")) $oDB->addColumn('nspam_keep', "by_trigger", "char", 1);
+
+			// 2010. 11. 29. 모듈차단회원 목록 및 문서 / 댓글 목록 정보 추가 체크.
+			if (!$oDB->isTableExists("nspam_denied_member")) $oDB->createTableByXmlFile("nspam_item_list");
+			if (!$oDB->isColumnExists("nspam_denied_member", "detected")) $oDB->addColumn('nspam_denied_member', "detected", "char", 1);
+			if (!$oDB->isColumnExists("nspam_denied_member", "dict_id"))  $oDB->addColumn('nspam_denied_member', "dict_id", "varchar", 10);
+			if (!$oDB->isColumnExists("nspam_denied_member", "spam_string"))  $oDB->addColumn('nspam_denied_member', "spam_string", "text");
+			if (!$oDB->isColumnExists("nspam_denied_member", "score")) $oDB->addColumn('nspam_denied_member', "score", "number", 3);
+
 			return new Object(0, 'success_updated');
 		}
 

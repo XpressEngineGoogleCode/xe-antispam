@@ -8,6 +8,7 @@
         <column name="data" var="data" />
         <column name="regdate" default="curdate()" />
 		<column name="detected" var="detected" />
+		<column name="by_trigger" var="by_trigger" default="N" />
 		<column name="dict_id" var="dict_id" />
 		<column name="spam_string" var="spam_string" />
 		<column name="score" var="score" />

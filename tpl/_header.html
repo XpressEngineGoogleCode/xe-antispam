@@ -9,7 +9,9 @@
         <li <!--@if($act=='dispNspamAdminDocumentList' || $act=='dispNspamAdminDocumentDeclaredList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminDocumentList')}">{$lang->nspam_document_list}</a></li>
         <li <!--@if($act=='dispNspamAdminCommentList'||$act=='dispNspamAdminCommentDeclaredList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminCommentList')}">{$lang->nspam_comment_list}</a></li>
         <li <!--@if($act=='dispNspamAdminTrackbackList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminTrackbackList')}">{$lang->nspam_trackback_list}</a></li>
+        <li <!--@if($act=='dispNspamAdminBannedList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminBannedList')}">스팸차단 로그</a></li>
         <li <!--@if($act=='dispNspamAdminKeepList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminKeepList')}">{$lang->nspam_keep_list}</a></li>
+        <li <!--@if($act=='dispNspamAdminDeniedMemberList')-->class="on"<!--@end-->><a href="{getUrl('act','dispNspamAdminDeniedMemberList')}">차단회원 목록</a></li>
     </ul>
 
 <!--@if($act=='dispNspamAdminConfig' || $act=='dispNspamAdminDeniedIPList')-->

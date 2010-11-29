@@ -18,11 +18,11 @@
         <th scope="col"><div>{$lang->type}</div></th>
         <th scope="col"><div>{$lang->writer}</div></th>
         <th scope="col" class="wide"><div>{$lang->document}</div></th>
-        <th scope="col">{$lang->regdate}</th>
 		<th scope="col">{$lang->spamscore}</th>
 		<th scope="col">{$lang->dictionary_detected}</th>
 		<th scope="col">{$lang->dictionary_id}</th>
 		<th scope="col">{$lang->matched_word}</th>
+        <th scope="col">{$lang->regdate}</th>
         <th scope="col">&nbsp;</th>
     </tr>
 </thead>
@@ -58,11 +58,11 @@
 			</td>
 
 		<!--@end-->
-        <td class="center">{zdate($keep->regdate,'Y.m.d H:i')}</td>
 		<td class="center">{$keep->score}</td>
 		<td class="center">{$keep->detected}</td>
 		<td class="center">{$keep->dict_id}</td>
 		<td class="center">{$keep->spam_string}</td>
+        <td class="center">{zdate($keep->regdate,'Y.m.d H:i')}</td>
         <td class="center">
 			<span class="button small green"><button type="button" onclick="restoreKeepObject('{$keep->nspam_keep_srl}')">복원</button></span>
 			<span class="button small red"><button type="button" onclick="deleteKeepObject('{$keep->nspam_keep_srl}')">{$lang->cmd_delete}</button></span>

@@ -4,6 +4,7 @@
 	<column name="data" type="text" />
     <column name="regdate" type="date" index="idx_regdate" />
 	<column name="detected" type="char" size="1" />
+	<column name="by_trigger" type="char" size="1" />
 	<column name="dict_id" type="varchar" size="10" />
     <column name="spam_string" type="text" />
     <column name="score" type="number" size="3" />

@@ -196,6 +196,31 @@ function completeCancelDeclare(ret_obj) {
 	location.reload();
 }
 
+function doDeleteDeniedMember(member_srl) {
+	var fo_obj = xGetElementById('fo_denied_member');
+	fo.obj.member_srl.value = member_srl;
+	procFilter(fo.obj, delete_denied_member);
+}
+
+function doDeleteDeniedMembers() {
+	var member_srls = [];
+	jQuery('input.check_member_srl:checked').each(
+		function () {
+			member_srls.push(jQuery(this).val());
+		});
+	
+	if (member_srls.length < 1) return;
+
+	member_srls = member_srls.join(',');
+
+	var params = new Array();
+	var response_tags = new Array('error', 'message');
+
+	params['member_srls'] = member_srls;
+
+	exec_xml('nspam', 'procNspamAdminDeleteDeniedMembers', params, completeReload, response_tags);
+}
+
 function doDeleteDeniedIP(ipaddress) {
     var fo_obj = xGetElementById('fo_denied_ip');
     fo_obj.ipaddress.value = ipaddress;

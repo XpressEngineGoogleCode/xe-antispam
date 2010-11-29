@@ -351,6 +351,49 @@
 			return $this->deleteIPs($ipaddrs);
 		}
 
+
+		function deleteDeniedMember($member_srl) {
+			$args->member_srl = $member_srl;
+			$args->denied = 'N';
+
+			$output = executeQuery('nspam.updateDeniedMember', $args);
+
+			if ($output->toBool()) {
+				executeQuery('nspam.deleteNspamDeniedMember', $args);
+			}
+
+			return $output;
+		}
+			
+
+
+		function procNspamAdminDeleteDeniedMember() {
+			
+			$member_srl = Context::get('member_srl');
+
+			$output = $this->deleteDeniedMember($member_srl);
+
+			return $output;
+		}
+
+		function procNspamAdminDeleteDeniedMembers() {
+			$member_srls = Context::get('member_srls');
+
+			$member_srls = explode(",", $member_srls);
+
+			foreach ($member_srls as $member_srl) {
+				$args->member_srl = $member_srl;
+
+				$output = $this->deleteDeniedMember($member_srl);
+
+				if ($output->toBool())
+					continue;
+				return $output;
+
+			}
+			return $output;
+		}
+
 		/**
 		 * @brief IP 제거
 		 * 스패머로 등록된 IP를 제거

@@ -224,9 +224,9 @@
 				if($act=='denied_ip'){
 				 // $this->giveWarning();
 				}else if($act=='denied_user'){
-					$this->denyUser();
+					$this->denyUser(NULL, $result);
 				}else if($act=='trash'){
-					$this->trashObject($obj, $type, $result);
+					$this->trashObject($obj, $type, $result, True);
 					return new Object(-1,'msg_trash_content');
 				}
 			}
@@ -246,9 +246,9 @@
 				if($act=='denied_ip'){
 				  $this->giveWarning();
 				}else if($act=='denied_user'){
-					$this->denyUser($author_srl);
+					$this->denyUser($author_srl, $result);
 				}else if($act=='trash'){
-					$this->trashObject($obj, $type, $result);
+					$this->trashObject($obj, $type, $result, False);
 				}
 			}
 			return new Object();
@@ -322,7 +322,9 @@
 		/**
 		 * @brief 로그인 된 사용자일 경우 사용자 차단 처리, 사용자가 지정되어 있을 경우 해당 사용자를 차단.
 		 */
-		function denyUser($member_srl=NULL) {
+		function denyUser($member_srl=NULL, $result) {
+
+			debugPrint($result);
 			$logged_info = Context::get('logged_info');
 			if(!$logged_info) return new Object();
 
@@ -340,7 +342,15 @@
 
 			// 차단 조치
 			$output = executeQuery('nspam.updateDeniedMember',$args);
-			if(!$output->toBool()) return $output;
+			if(!$output->toBool()) return $output; 
+
+			// Nspam 차단 회원 목록에 추가.
+			$args2->member_srl = $args->member_srl;
+			$args2->detected = $result->dictionary_result->detected == 'true'? 'Y':'N';
+			$args2->dict_id = $result->dictionary_result->dictionary_id;
+			$args2->spam_string = $result->dictionary_result->spam_string;
+			$args2->score = $result->score;
+			$output2 = executeQuery('nspam.insertNspamDeniedMember', $args2);
 
 			// 차단 대상 회원 description 에 차단 사유 및 시간을 등록
 			$desc = date("Y.m.d H:i:s") ." 스팸공동대응API로 차단되었습니다.\n".$desc;
@@ -354,7 +364,7 @@
 		/**
 		 * @brief 글을 스팸보관함으로 이동함.
 		 */
-		function _trashDocument($obj, $result=NULL) {
+		function _trashDocument($obj, $result=NULL, $by_trigger=False) {
 
 			if ($obj->document_srl) {
 
@@ -388,6 +398,8 @@
 				$vars->spam_string = $result->dictionary_result->spam_string;
 			}
 			$vars->score = $result->score;
+
+			if ($by_trigger) $vars->by_trigger = 'Y';
 			
 			$output = executeQuery('nspam.insertKeep',$vars);
 			return $output;
@@ -398,7 +410,10 @@
 		/**
 		 * @brief 댓글을 스팸보관함으로 이동함.
 		 */
-		function _trashComment($obj, $result=NULL) {
+		function _trashComment($obj, $result=NULL, $by_trigger=False) {
+
+			if ($by_trigger) debugPrint("bytrigger TRUE!");
+			else debugPrint("byTrigger FALSE!");
 
 			if($obj->comment_srl){
 				$oCommentModel = &getModel('comment');
@@ -440,6 +455,8 @@
 				$vars->spam_string = $result->dictionary_result->spam_string;
 			}
 			$vars->score = $result->score;
+
+			if ($by_trigger) $vars->by_trigger = 'Y';
 			$output = executeQuery('nspam.insertKeep',$vars);
 
 			return $output;
@@ -449,7 +466,7 @@
 		/**
 		 * @brief 트랙백을 스팸보관함으로 이동함.
 		 */
-		function _trashTrackback($obj, $result=NULL) {
+		function _trashTrackback($obj, $result=NULL, $by_trigger=False) {
 			if($obj->trackback_srl){
 				$oTrackbackModel = &getModel('trackback');
 				$output = $oTrackbackModel->getTrackback($obj->trackback_srl);
@@ -477,51 +494,22 @@
 				$vars->spam_string = $result->dictionary_result->spam_string;
 			}
 			$vars->score = $result->score;
+
+			if ($by_trigger) $vars->by_trigger = 'Y';
 			$output = executeQuery('nspam.insertKeep',$vars);
 		}
 
 		/**
 		 * @brief 스팸으로 판정된 글/댓글을 보관함으로 옮김.
 		 */
-		function trashObject($obj, $type='document', $result=NULL){
+		function trashObject($obj, $type='document', $result=NULL, $by_trigger=False){
 
 			if($type=='document'){
-				$output = $this->_trashDocument($obj, $result);
+				$output = $this->_trashDocument($obj, $resulti, $by_trigger);
 			}else if($type=='comment'){
-				$output = $this->_trashComment($obj, $result);
+				$output = $this->_trashComment($obj, $result, $by_trigger);
 			}else if($type=='trackback'){
-			/*
-				if($obj->trackback_srl){
-				
-					$oTrackbackModel = &getModel('trackback');
-					$output = $oTrackbackModel->getTrackback($obj->trackback_srl);
-
-					// 트랙백이 존재하는 경우
-					if($output->data){
-						$obj = clone($output->data);
-						$output = executeQuery('trackback.deleteTrackback',$obj);
-					}
-				}else{
-					if(!$obj->trackback_srl) $obj->trackback_srl = getNextSequence();
-				}
-
-				if(!$obj->list_order) $obj->list_order = $obj->trackback_srl* -1;
-
-				$vars = new stdClass;
-				$vars->nspam_keep_srl = $obj->trackback_srl;
-				$vars->type = 'comment';
-				$vars->data = serialize($obj);
-
-				// 스팸사전에서 필터된 결과 저장
-				if ($result->dictionary_result && $result->dictionary_result != "") {
-					$vars->detected = $result->dictionary_result->detect == 'true' ? 'Y':'N';
-					$vars->dict_id = $result->dictionary_result->dictionary_id;
-					$vars->spam_string = $result->dictionary_result->spam_string;
-				}
-				$vars->score = $result->score;
-				$output = executeQuery('nspam.insertKeep',$vars);*/
-				$output = $this->_trashTrackback($obj, $result);
-
+				$output = $this->_trashTrackback($obj, $result, $by_trigger);
 			}
 			return $output;
 		}

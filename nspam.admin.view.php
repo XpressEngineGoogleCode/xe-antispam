@@ -278,6 +278,44 @@
 
 		function dispNspamAdminKeepList(){
 			$obj->page = Context::get('page');
+			$obj->by_trigger = 'N';
+			$output = executeQueryArray('nspam.getKeepList',$obj);
+			if(!$output->toBool()) return $output;
+		
+			$oDocumentModel = &getModel('document');
+			$oCommentModel = &getModel('comment');
+			$oTrackbackModel = &getModel('trackback');
+
+			$keep_list = array();
+			if($output->data){
+				foreach($output->data as $k => $v){
+					$data = unserialize($v->data);
+					if($v->type=="document"){
+						$oDocument = $oDocumentModel->getDocument(0);
+						$oDocument->setAttribute($data);
+						$v->oDocument = $oDocument;
+					}else if($v->type=="comment"){
+						$oComment = $oCommentModel->getComment(0);
+						$oComment->setAttribute($data);
+						$v->oComment = $oComment;
+					}else if($v->type="trackback"){
+						$v->oTrackback = $data;
+					}
+					$keep_list[$k] = $v;
+				}
+			}
+
+			Context::set('keep_list', $keep_list);
+			Context::set('page_navigation', $output->page_navigation);
+			Context::set('total_count', $output->total_count);
+			Context::set('total_page', $output->total_page);
+			Context::set('page', $output->page);
+ 
+		}
+
+		function dispNspamAdminBannedList(){
+			$obj->page = Context::get('page');
+			$obj->by_trigger = 'Y';
 			$output = executeQueryArray('nspam.getKeepList',$obj);
 			if(!$output->toBool()) return $output;
 		
@@ -328,6 +366,23 @@
 			}
 			Context::set('ip_list', $ip_list);
 		}
+
+
+		/**
+		 * @brief 스팸 모듈에 의해 차단된 회원 목록 출력
+		 **/
+		function dispNspamAdminDeniedMemberList() {
+
+			$oNspamModel = &getModel('nspam');
+			
+			//$search_keyword = Context::get('search_keyword');
+			//$search_target = Context::get('search_target');
+
+			$denied_member_list = $oNspamModel->getMemberListDeniedByNspam();
+
+			Context::set('denied_member_list', $denied_member_list);
+		}
+
 
 	}
 ?>
