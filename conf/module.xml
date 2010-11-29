@@ -32,8 +32,6 @@
         <action name="procNspamAdminDeleteDeniedIP" type="controller" standalone="true" />
 		<action name="procNspamAdminDeleteDeniedIPs" type="controller" standalone="true" />
         <action name="procNspamAdminDoProccess" type="controller" standalone="true" />
-        <action name="procNspamAdminAllDocumentDoProccess" type="controller" standalone="true" />
-        <action name="procNspamAdminAllCommentDoProccess" type="controller" standalone="true" />
         <action name="procNspamAdminAllTrackbackDoProccess" type="controller" standalone="true" />
         <action name="procNspamAdminAllDocumentTrashSendSpam" type="controller" standalone="true" />
         <action name="procNspamAdminTestGetSpamScore" type="controller" standalone="true" />
