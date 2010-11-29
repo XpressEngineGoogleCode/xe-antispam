@@ -324,7 +324,6 @@
 		 */
 		function denyUser($member_srl=NULL, $result) {
 
-			debugPrint($result);
 			$logged_info = Context::get('logged_info');
 			if(!$logged_info) return new Object();
 
@@ -411,9 +410,6 @@
 		 * @brief 댓글을 스팸보관함으로 이동함.
 		 */
 		function _trashComment($obj, $result=NULL, $by_trigger=False) {
-
-			if ($by_trigger) debugPrint("bytrigger TRUE!");
-			else debugPrint("byTrigger FALSE!");
 
 			if($obj->comment_srl){
 				$oCommentModel = &getModel('comment');

@@ -198,8 +198,8 @@ function completeCancelDeclare(ret_obj) {
 
 function doDeleteDeniedMember(member_srl) {
 	var fo_obj = xGetElementById('fo_denied_member');
-	fo.obj.member_srl.value = member_srl;
-	procFilter(fo.obj, delete_denied_member);
+	fo_obj.member_srl.value = member_srl;
+	procFilter(fo_obj, delete_denied_member);
 }
 
 function doDeleteDeniedMembers() {
