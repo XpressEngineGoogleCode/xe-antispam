@@ -170,18 +170,24 @@
 			$config = $oNspamModel->getNspamPartConfig($type);
 
 			if(!$config) return $return;
-
 			
 			// 로그인되어 있으면 계정 차단, 비로그인이면 아이피 차단
 			if ($is_logged) {
-				if (($config->score_deny_user <= $score || $config->score_denied_user <= $score) && $config->use_deny_user == 'Y') 
-					array_push($return,'denied_user');
+				if ($this->isScoreValid($config->score_deny_user)) {
+					if ($config->score_deny_user <= $score && $config->use_deny_user == 'Y') array_push($return, 'denied_user');
+				} else if ($this->isScoreValied($config->score_denied_user)) {
+					if ($config->score_denied_user <= $score && $config->use_deny_user == 'N') array_push($return, 'denied_user');
+				}
 			} else {
-				if ($config->score_denied_ip <= $score && $config->use_deny_ip == 'Y') 
-					array_push($return, 'denied_ip');
+				if ($this->isScoreValid($config->score_denied_ip) && $config->score_denied_ip <= $score && $config->use_deny_ip == 'Y') array_push($return, 'denied_ip');
 			}
-			if ($config->score_trash_content <= $score && $config->use_trash_content == 'Y') array_push($return, 'trash');
+			if ($this->isScoreValid($config->score_trash_content) && $config->score_trash_content <= $score && $config->use_trash_content == 'Y') array_push($return, 'trash');
+
 			return $return;
+		}
+
+		function isScoreValid($score) {
+			return $score >= 0 && $score <= 100;
 		}
 
 		/**
@@ -222,7 +228,7 @@
 
 			foreach($action_list as $k => $act){
 				if($act=='denied_ip'){
-				 // $this->giveWarning();
+					$this->giveWarning();
 				}else if($act=='denied_user'){
 					$this->denyUser(NULL, $result);
 				}else if($act=='trash'){
@@ -390,6 +396,9 @@
 			$vars->nspam_keep_srl = $obj->document_srl;
 			$vars->type = 'document'; 
 			$vars->data = serialize($obj);
+			$vars->user_id = $obj->user_id;
+			$vars->title_content = $obj->content;
+
 			// 스팸사전에서 필터된 결과 저장
 			if ($result->dictionary_result && $result->dictionary_result != "") {
 				$vars->detected = $result->dictionary_result->detect == 'true' ? 'Y':'N';
@@ -443,7 +452,9 @@
 			$vars->nspam_keep_srl = $obj->comment_srl;
 			$vars->type = 'comment';
 			$vars->data = serialize($obj);
-				
+			$vars->user_id = $obj->nick_name;
+			$vars->title_content = $obj->content;
+
 			// 스팸사전에서 필터된 결과 저장
 			if ($result->dictionary_result && $result->dictionary_result != "") {
 				$vars->detected = $result->dictionary_result->detect == 'true' ? 'Y':'N';
@@ -501,7 +512,7 @@
 		function trashObject($obj, $type='document', $result=NULL, $by_trigger=False){
 
 			if($type=='document'){
-				$output = $this->_trashDocument($obj, $resulti, $by_trigger);
+				$output = $this->_trashDocument($obj, $result, $by_trigger);
 			}else if($type=='comment'){
 				$output = $this->_trashComment($obj, $result, $by_trigger);
 			}else if($type=='trackback'){

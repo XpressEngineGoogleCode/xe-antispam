@@ -64,6 +64,11 @@
 			if (!$oDB->isColumnExists("nspam_denied_member", "spam_string")) return true;
 			if (!$oDB->isColumnExists("nspam_denied_member", "score")) return true;
 
+			// 2010. 11. 30. 스팸 차단 로그 / 스팸 보관 목록의 검색 기능을 위한 필드 체크
+			if (!$oDB->isColumnExists("nspam_keep", "user_id")) return true;
+			if (!$oDB->isColumnExists("nspam_keep", "title_content")) return true;
+
+
 			return false;
 		}
 
@@ -115,6 +120,10 @@
 			if (!$oDB->isColumnExists("nspam_denied_member", "dict_id"))  $oDB->addColumn('nspam_denied_member', "dict_id", "varchar", 10);
 			if (!$oDB->isColumnExists("nspam_denied_member", "spam_string"))  $oDB->addColumn('nspam_denied_member', "spam_string", "text");
 			if (!$oDB->isColumnExists("nspam_denied_member", "score")) $oDB->addColumn('nspam_denied_member', "score", "number", 3);
+
+			// 2010. 11. 30. 스팸 차단 로그 / 스팸 보관 목록의 검색 기능을 위한 필드 체크
+			if (!$oDB->isColumnExists("nspam_keep", "title_content")) $oDB->addColumn('nspam_keep', "title_content", "text");
+			if (!$oDB->isColumnExists("nspam_keep", "user_id")) $oDB->addColumn('nspam_keep', "user_id", "varchar", 80);
 
 			return new Object(0, 'success_updated');
 		}

@@ -12,5 +12,7 @@
 		<column name="dict_id" var="dict_id" />
 		<column name="spam_string" var="spam_string" />
 		<column name="score" var="score" />
+		<column name="user_id" var="user_id" />
+		<column name="title_content" var="title_content" />
     </columns>
 </query>

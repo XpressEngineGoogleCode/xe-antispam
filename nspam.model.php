@@ -72,6 +72,16 @@
 
 		}
 
+		function searchBannedList($search_keyword) {
+			
+		
+
+		}
+
+		function searchKeepList($search_keyword) {
+
+		}
+
 		function getMemberListDeniedByNspam() {
 
 			$args->sort_index = "regdate";

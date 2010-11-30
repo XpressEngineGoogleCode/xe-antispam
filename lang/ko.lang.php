@@ -28,4 +28,11 @@
 	$lang->nspam_trackback_list = '엮인글 목록';
 
 	$lang->cmd_delete_checked_comment = '선택댓글 삭제';
+
+	$lang->banned_search_target_list = array(
+		'user_id' => '글쓴이',
+		'score' => '스팸 지수(이상)',
+		'title_content' => '제목 / 내용',
+		'regdate' => '등록일',
+	);
 ?>

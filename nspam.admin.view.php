@@ -279,6 +279,26 @@
 		function dispNspamAdminKeepList(){
 			$obj->page = Context::get('page');
 			$obj->by_trigger = 'N';
+			
+			// 검색 조건 세팅
+			$search_keyword = Context::get('search_keyword');
+			$search_target = Context::get('search_target');
+
+			switch ($search_target) {
+
+				case 'user_id':
+					$obj->user_id = $search_keyword;
+					break;
+				case 'title_content':
+					$obj->title_content = $search_keyword;
+					break;
+				case 'regdate':
+					$obj->regdate = $search_keyword;
+					break;
+				case 'score':
+					$obj->score = $search_keyword;
+			}
+
 			$output = executeQueryArray('nspam.getKeepList',$obj);
 			if(!$output->toBool()) return $output;
 		
@@ -316,6 +336,26 @@
 		function dispNspamAdminBannedList(){
 			$obj->page = Context::get('page');
 			$obj->by_trigger = 'Y';
+			
+			// 검색 조건 세팅
+			$search_keyword = Context::get('search_keyword');
+			$search_target = Context::get('search_target');
+
+			switch ($search_target) {
+
+				case 'user_id':
+					$obj->user_id = $search_keyword;
+					break;
+				case 'title_content':
+					$obj->title_content = $search_keyword;
+					break;
+				case 'regdate':
+					$obj->regdate = $search_keyword;
+					break;
+				case 'score':
+					$obj->score = $search_keyword;
+			}
+
 			$output = executeQueryArray('nspam.getKeepList',$obj);
 			if(!$output->toBool()) return $output;
 		
