@@ -27,6 +27,7 @@
 
 		// 글 추가시 트리거
 		function triggerInsertDocument(&$obj) {
+
 			// 로그인 여부, 로그인 정보, 권한 유무 체크
 			$is_logged = Context::get('is_logged');
 			$logged_info = Context::get('logged_info');
@@ -36,11 +37,6 @@
 			if($is_logged) {
 				if($logged_info->is_admin == 'Y') return new Object();
 				if($grant->manager) return new Object();
-
-				$obj->member_srl = $logged_info->member_srl;
-				$obj->nick_name = $logged_info->nick_name;
-				$obj->email_address = $logged_info->email_address;
-				$obj->homepage = $logged_info->homepage;
 			}
 
 			// pass
