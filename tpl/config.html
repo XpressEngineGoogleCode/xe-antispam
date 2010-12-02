@@ -7,7 +7,7 @@
 <table class="rowTable" cellspacing="0">
 	<tbody>
 	<tr>
-		<th>사용여부</th>
+		<th>{$lang->nspam_whether_to_use}</th>
 		<td>
 			<input type="checkbox" name="use_nspam" value="Y" id="nspam_enable" <!--@if($nspam_config->use_nspam=='Y')-->checked="checked"<!--@end--> />
 			<label for="nspam_enable">
@@ -16,9 +16,9 @@
 		</td>
 	</tr>
 	<tr>
-		<th>제외 모듈 선택</th>
+		<th>{$lang->nspam_modules_to_exclude}</th>
 		<td>
-			<p>NAVER 스팸 필터를 사용하지 않을 모듈을 선택합니다.</p>
+			<p>{$lang->about_modules_to_exclude}</p>
 			<input type="hidden" name="module_apply" value="deny" id="module_deny" />
 			<input type="hidden" id="target_module" name="target_module" value="<!--@if(is_array($nspam_config->target_module))-->{join(',',$nspam_config->target_module)}<!--@end-->" />
 			<select id="_target_module" size="10" style="width:200px">
@@ -29,15 +29,15 @@
 			<!--@end-->
 			</select>
 			<div>
-				<a class="button green" onclick="popopen(this.href,'ModuleSelect');return false;" href="{getUrl('','module','module','act','dispModuleSelectList','id','target_module')}"><span>모듈 찾기</span></a>
+				<a class="button green" onclick="popopen(this.href,'ModuleSelect');return false;" href="{getUrl('','module','module','act','dispModuleSelectList','id','target_module')}"><span>{$lang->cmd_find_module}</span></a>
 				<span class="button red"><button type="button" onclick="midRemove('target_module')">{$lang->cmd_delete}</button></span>
 			</div>
 		</td>
 	</tr>
 	<tr>
-		<th>스팸필터</th>
+		<th>{$lang->nspam_spamfilter}</th>
 		<td>
-		<p>형태소 분석, 외국어 구분 등 스팸 여부를 판정하는 소프트웨어 입니다.</p>
+		<p>{$lang->about_nspam_spamfilter}</p>
 		<p>
 			<input type="hidden" id="use_spamfilters" name="use_spamfilters" value="<!--@if(is_array($nspam_config->use_spamfilters))-->{join(',',array_keys($nspam_config->use_spamfilters))}<!--@end-->" />
 			<input type="hidden" id="use_spamfilters_info" name="use_spamfilters_info" value="" />
@@ -50,16 +50,16 @@
 			<!--@end-->
 			</select>
 			<div>
-				<a class="button green" onclick="popopen(this.href,'SelectSpam');return false;" href="{getUrl('','module','nspam','act','dispNspamAdminPopupSpamFilters','id','use_spamfilters')}"><span>스팸필터 찾기</span></a>
+				<a class="button green" onclick="popopen(this.href,'SelectSpam');return false;" href="{getUrl('','module','nspam','act','dispNspamAdminPopupSpamFilters','id','use_spamfilters')}"><span>{$lang->cmd_find_spamfilter}</span></a>
 				<span class="button red"><button type="button" onclick="midRemove('use_spamfilters')">{$lang->cmd_delete}</button></span>
 			</div>
 		</td>
 	</tr>
 	<tr>
-		<th>스팸사전</th>
+		<th>{$lang->nspam_spam_dictionary}</th>
 		<td>
-			<p>단어 또는 문자열을 담아 놓은 스팸사전입니다. 이 스팸사전으로 콘텐트를 검색하여 스팸 여부를 판정합니다.<br />스팸사전과 일치하는 단어가 있을 시 <span style="font-weight:bold;">무조건 스팸으로 판정</span>되며, 다른 사람이 작성한 스팸사전을 적용할 시<br />  정상적인 게시물도 스팸으로 분류되는 결과를 얻을 수 있으므로 스팸사전을 선택할 때는 <span style="font-weight:bold;">각별히 주의할 필요</span>가 있습니다. </p>
-			<p>새로운 스팸사전은 <span style="font-weight:bold;">스팸공동대응센터 홈페이지에서 네이버 아이디로 로그인 후</span> 등록하실 수 있습니다.</br>아래의 링크를 통해 스팸사전 등록 페이지로 이동하실 수 있습니다.</br><a href="http://antispam.naver.com/spamCenter/dictionary.html" style="text-decoration:underline !important; color:blue;" target="new">스팸 사전 등록</a></p>
+			<p>{$lang->about_nspam_spam_dictionary}</p>
+			<p>{$lang->about_my_spam_dictionary}</p>
 			<input type="hidden" id="use_spamdics" name="use_spamdics" value="<!--@if(is_array($nspam_config->use_spamdics))-->{join(',',array_keys($nspam_config->use_spamdics))}<!--@end-->"/>
 			<input type="hidden" id="use_spamdics_info" name="use_spamdics_info" value="" />
 			<select id="_use_spamdics" size="5" style="width:200px" class="selected">
@@ -71,15 +71,15 @@
 
 			</select>
 			<div>
-				<a class="button green" onclick="popopen(this.href,'SelectSpam');return false;" href="{getUrl('','module','nspam','act','dispNspamAdminPopupSpamDics','id','use_spamdics')}"><span>스팸사전 찾기</span></a>
+				<a class="button green" onclick="popopen(this.href,'SelectSpam');return false;" href="{getUrl('','module','nspam','act','dispNspamAdminPopupSpamDics','id','use_spamdics')}"><span>{$lang->cmd_find_spam_dictionary}</span></a>
 				<span class="button red"><button type="button" onclick="midRemove('use_spamdics')">{$lang->cmd_delete}</button></span>
 			</div>
 		</td>
 	</tr>
 	<tr>
-		<th>스팸지수 테스트</th>
+		<th>{$lang->nspam_test_api}</th>
 		<td>
-			<p>설정된 스팸필터와 스팸사전으로 스팸지수를 테스트 합니다.</p>
+			<p>{$lang->about_nspam_test_api}</p>
 			<textarea id="test_content" rows="6" cols="80"></textarea>
 			<br />
 			<span class="button"><button type="button" onclick="testGetSpamScore()">스팸지수 확인</button></span>
