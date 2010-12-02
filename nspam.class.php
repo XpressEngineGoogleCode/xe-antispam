@@ -27,6 +27,11 @@
 			$oModuleController->insertTrigger('comment.deleteComment', 'nspam', 'controller', 'triggerCommentDelete', 'after');
 			$oModuleController->insertTrigger('document.deleteDocument', 'nspam', 'controller', 'triggerDocumentDelete', 'after');
 			$oModuleController->insertTrigger('trackback.deleteTrackback', 'nspam', 'controller', 'triggerDeleteTrackback', 'after');
+		
+			// 2010. 12. 2. trigger 추가.
+			$oModuleController->insertTrigger('document.insertDocument', 'nspam', 'controller', 'triggerInsertItemAfter', 'after');
+			$oModuleController->insertTrigger('document.insertComment', 'nspam', 'controller', 'triggerInsertItemAfter', 'after');
+			$oModuleController->insertTrigger('document.insertTrackback', 'nspam', 'controller', 'triggerInsertItemAfter', 'after');
 
 			return new Object();
 		}
@@ -68,7 +73,11 @@
 			if (!$oDB->isColumnExists("nspam_keep", "user_id")) return true;
 			if (!$oDB->isColumnExists("nspam_keep", "title_content")) return true;
 
-
+			// 2010. 12. 02. 글/댓글 목록 스팸지수 로그를 위한 트리거 체크
+			if (!$oModuleModel->getTrigger('document.insertDocument', 'nspam', 'controller', 'triggerInsertItemAfter', 'after')) return true;
+			if (!$oModuleModel->getTrigger('document.insertComment', 'nspam', 'controller', 'triggerInsertItemAfter', 'after')) return true;
+			if (!$oModuleModel->getTrigger('document.insertTrackback', 'nspam', 'controller', 'triggerInsertItemAfter', 'after')) return true;
+			
 			return false;
 		}
 
@@ -124,6 +133,14 @@
 			// 2010. 11. 30. 스팸 차단 로그 / 스팸 보관 목록의 검색 기능을 위한 필드 체크
 			if (!$oDB->isColumnExists("nspam_keep", "title_content")) $oDB->addColumn('nspam_keep', "title_content", "text");
 			if (!$oDB->isColumnExists("nspam_keep", "user_id")) $oDB->addColumn('nspam_keep', "user_id", "varchar", 80);
+
+			// 2010. 12. 02.
+			if (!$oModuleModel->getTrigger('document.insertDocument', 'nspam', 'controller', 'triggerInsertItemAfter', 'after'))
+				$oModuleController->insertTrigger('document.insertDocument', 'nspam', 'controller', 'triggerInsertItemAfter', 'after');
+			if (!$oModuleModel->getTrigger('document.insertComment', 'nspam', 'controller', 'triggerInsertItemAfter', 'after')) 
+				$oModuleController->insertTrigger('document.insertComment', 'nspam', 'controller', 'triggerInsertItemAfter', 'after');
+			if (!$oModuleModel->getTrigger('document.insertTrackback', 'nspam', 'controller', 'triggerInsertItemAfter', 'after'))
+				$oModuleController->insertTrigger('document.insertTrackback', 'nspam', 'controller', 'triggerInsertItemAfter', 'after');
 
 			return new Object(0, 'success_updated');
 		}

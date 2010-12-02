@@ -64,6 +64,16 @@
 			return $output;
 		}
 
+		function triggerInsertItemAfter($obj) {
+
+
+			$type = $_SESSION['nspam_type'];
+			$result = unserialize($_SESSION['nspam_result']);
+
+			$output = $this->_logItem($obj, $type, $result);
+			return $output;
+		}
+
 
 		/**
 		 * @brief 댓글 추가 시에 실행되는 트리거
@@ -190,6 +200,7 @@
 		 * @brief spam api 를 통해 content 에 대한 스팸 지수를 가져옴
 		 */
 		function getSpamScore($vars, $type){
+
 			$content = $vars->content;
 			$title = $vars->title;
 			$ip = $_SERVER['REMOTE_ADDR'];
@@ -222,6 +233,10 @@
 		function doSpamProcess($obj, $result, $type){
 			$action_list = $this->getAction($result->score, $type);
 
+
+			//스팸 설정을 적용했던 기록을 남김.
+			$this->_logItem($obj, $type, $result);
+
 			foreach($action_list as $k => $act){
 				if($act=='denied_ip'){
 					$this->giveWarning();
@@ -243,7 +258,10 @@
 		function doSpamBatchProcess($obj, $result, $type, $author_srl) {
 
 			$action_list = $this->getAction($result->score, $type);
-
+			
+			// 스팸 설정을 적용했던 기록을 남김.
+			$this->_logItem($obj, $type, $result);
+			
 			foreach($action_list as $k => $act){
 				if($act=='denied_ip'){
 				  $this->giveWarning();
@@ -254,6 +272,39 @@
 				}
 			}
 			return new Object();
+		}
+
+
+		/**
+		 * @brief 스팸설정을 적용했던 기록을 남김
+		 */
+		function _logItem($obj, $type, $result) {
+			// 해당 게시물의 이전 스팸지수 기록을 확인.
+			switch ($type) {
+				case 'document':
+					$args->document_srl = $obj->document_srl;
+					break;
+				case 'comment':
+					$args->document_srl = $obj->comment_srl;
+					break;
+			}
+
+			if (!$args->document_srl || $args->document_srl == '')  {
+
+				$_SESSION['nspam_result'] = serialize($result);
+				$_SESSION['nspam_type'] = $type;
+				return;
+			}
+
+			$output = executeQuery('nspam.getItem', $args);
+			$args->score = $result->score;
+			
+			// 해당 게시물의 로그가 있으면 추가 없으면 갱신;
+			if(!$output->data) {
+				executeQuery('nspam.insertItem', $args);
+			} else	{
+				executeQuery('nspam.updateItem', $args);
+			}
 		}
 		
 		

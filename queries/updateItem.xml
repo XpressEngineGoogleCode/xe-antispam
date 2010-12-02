@@ -1,0 +1,11 @@
+<query id="updateItem" action="update">
+    <tables>
+        <table name="nspam_item_list" />
+    </tables>
+    <columns>
+        <column name="score" var="score" />
+    </columns>
+    <conditions>
+        <condition operation="equal" column="document_srl" var="document_srl" filter="number" notnull="notnull" />
+    </conditions>
+</query>

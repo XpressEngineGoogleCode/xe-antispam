@@ -121,6 +121,31 @@
 			$output = $oDocumentModel->getDocumentList($args);
 
 			// 템플릿에 쓰기 위해서 document_model::getDocumentList() 의 return object에 있는 값들을 세팅
+			$document_srls = array();
+
+			// 이전에 받은 스팸지수를 확인
+			foreach($output->data as $key => $val) {
+				array_push($document_srls, $val->document_srl);
+			}
+				
+			// 스팸지수를 결과에 포함시킴.
+			$args2->document_srls = $document_srls;
+			$spam_scores = executeQuery('nspam.getItemList', $args2);
+
+			if (!is_array($spam_scores->data)) $spam_scores = array($spam_scores->data);
+			else $spam_scores = $spam_scores->data;
+			
+			$score_table = array();
+			foreach($spam_scores as $key => $val) {
+				$score_table[$val->document_srl] = $val->score;
+			}
+			
+			foreach($output->data as $key => $val) {
+				$output->data[$key]->score = $score_table[$val->document_srl];
+			}
+
+			// 여기까지 정리할 필요 있음.
+
 			Context::set('total_count', $output->total_count);
 			Context::set('total_page', $output->total_page);
 			Context::set('page', $output->page);
@@ -164,6 +189,8 @@
 				}
 				$declared_output->data = $document_list;
 			}
+
+
 		
 			// 템플릿에 쓰기 위해서 document_model::getDocumentList() 의 return object에 있는 값들을 세팅
 			Context::set('total_count', $declared_output->total_count);
@@ -205,6 +232,30 @@
 					}
 				}
 			}
+
+			$comment_srls2 = array();
+
+			// 이전에 받은 스팸지수를 확인
+			foreach($output->data as $key => $val) {
+				array_push($comment_srls2, $val->comment_srl);
+			}
+				
+			// 스팸지수를 결과에 포함시킴.
+			$args2->document_srls = $comment_srls2;
+			$spam_scores = executeQuery('nspam.getItemList', $args2);
+
+			if (!is_array($spam_scores->data)) $spam_scores = array($spam_scores->data);
+			else $spam_scores = $spam_scores->data;
+			
+			$score_table = array();
+			foreach($spam_scores as $key => $val) {
+				$score_table[$val->document_srl] = $val->score;
+			}
+			
+			foreach($output->data as $key => $val) {
+				$output->data[$key]->score = $score_table[$val->comment_srl];
+			}
+
 			Context::set('keep_srls',$keep_srls);
 
 			// 템플릿에 쓰기 위해서 comment_model::getTotalCommentList() 의 return object에 있는 값들을 세팅

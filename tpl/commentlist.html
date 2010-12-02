@@ -46,6 +46,7 @@
         <th scope="col"><div>{$lang->nick_name}</div></th>
         <th scope="col"><div>{$lang->date}</div></th>
         <th scope="col"><div>{$lang->ipaddress}</div></th>
+        <th scope="col"><div>스팸지수</div></th>
     </tr>
 </thead>
 <tbody>
@@ -57,6 +58,7 @@
         <td class="nowrap"><span class="member_{$val->member_srl}">{htmlspecialchars($val->nick_name)}</span></td>
         <td class="date center nowrap">{(zdate($val->regdate,"Y-m-d\nH:i:s"))}</td>
         <td class="number left nowrap"><a href="{getUrl('search_target','ipaddress','search_keyword',$val->ipaddress)}">{$val->ipaddress}</a></td>
+		<td class="number center">{$val->score}</td>
     </tr>
     <!--@end-->
 </tbody>

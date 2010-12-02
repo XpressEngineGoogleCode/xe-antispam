@@ -366,7 +366,9 @@
 		}
 			
 
-
+		/**
+		 * @brief 스팸등록으로 차단당한 회원을 차단 해제
+		 */ 
 		function procNspamAdminDeleteDeniedMember() {
 			
 			$member_srl = Context::get('member_srl');
@@ -376,23 +378,6 @@
 			return $output;
 		}
 
-		function procNspamAdminDeleteDeniedMembers() {
-			$member_srls = Context::get('member_srls');
-
-			$member_srls = explode(",", $member_srls);
-
-			foreach ($member_srls as $member_srl) {
-				$args->member_srl = $member_srl;
-
-				$output = $this->deleteDeniedMember($member_srl);
-
-				if ($output->toBool())
-					continue;
-				return $output;
-
-			}
-			return $output;
-		}
 
 		/**
 		 * @brief IP 제거
@@ -407,6 +392,10 @@
 			return $output;
 		}
 
+
+		/**
+		 * @brief 스패머로 등록된 IP를 제거
+		 **/
 		function deleteIPs($ipaddrs) {
 			$output = null;
 
@@ -435,6 +424,7 @@
 
 			$oNspamModel = &getModel('nspam');
 
+			// 스팸설정 및 필터가 지정되었는지 확인
 			$config = $oNspamModel->getNspamPartConfig($type);
 			if(!$config || $config->use_nspam!='Y') return new Object(-1,'msg_dont_use_nspam');
 
@@ -450,7 +440,6 @@
 			$member_srls = array();
 
 			if($type=='document'){
-
 				$oDocumentModel = &getModel('document');
 				//$document_list = $oDocumentModel->getDocuments($srls,true,false);
 				$obj_list = $oDocumentModel->getDocuments($srls,true,false);
@@ -493,7 +482,7 @@
 			$items = $output->scores->item;
 
 			foreach($items as $i => $item){
-				if($item->score < 1) continue;
+				if($item->score < 0) continue;
 
 				unset($obj);
 				$obj = new stdClass;
@@ -505,12 +494,17 @@
 				}else if($type=='trackback'){
 					$obj->trackback_srl = $item->id;
 				}
-				
+
+				//$output = $oNspamController->doSpamBatchProcess($obj, $item, $type, $member_srls[$item->id]);
 				$output = $oNspamController->doSpamBatchProcess($obj, $item, $type, $member_srls[$item->id]);
+
+
 			}
 		}
 
-
+		/**
+		 * @brief 스팸지수 테스트
+		 */
 		function procNspamAdminTestGetSpamScore(){
 			$filters = explode(',',Context::get('filters'));
 			$dics = explode(',',Context::get('dics'));
