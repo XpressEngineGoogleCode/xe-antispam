@@ -2,13 +2,8 @@
 include_once('JSON.php');
 
 class RequestSpamApi extends Object{
-
-	//real
-	//var $api_url='antispam.openapi.naver.com';
-
-	//test
-	var $api_url='220.95.233.135';
-
+	var $api_url='antispam.openapi.naver.com';
+	
 	function _request($body){
 
 		$header = sprintf(
