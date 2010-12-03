@@ -65,10 +65,11 @@
 		}
 
 		function triggerInsertItemAfter($obj) {
-
-
+			// 세션에서 필요한 값을 읽음.
 			$type = $_SESSION['nspam_type'];
 			$result = unserialize($_SESSION['nspam_result']);
+			unset($_SESSION['nspam_type']);
+			unset($_SESSION['nspam_result']);
 
 			$output = $this->_logItem($obj, $type, $result);
 			return $output;
@@ -290,7 +291,6 @@
 			}
 
 			if (!$args->document_srl || $args->document_srl == '')  {
-
 				$_SESSION['nspam_result'] = serialize($result);
 				$_SESSION['nspam_type'] = $type;
 				return;

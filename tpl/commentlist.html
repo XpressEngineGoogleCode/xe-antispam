@@ -25,8 +25,8 @@
 <input type="hidden" name="page" value="{$page}" />
 <div class="fr">
 
-	<span class="button green"><button type="button" <!--@if($nspam_not_in_use)-->onclick="checkSpamConfig('{$lang->msg_dont_use_nspam}')"<!--@elseif($no_spamfilter_specified)-->onclick="checkSpamConfig('{$lang->msg_no_spamfilter_specified}')"<!--@else-->onclick="doSpamProccess('comment', '{$lang->msg_no_article_selected}')"<!--@end-->>스팸설정 적용</button></span>
-	<span class="button red"><button type="button" onclick="sendSpamContents('comment', '{$lang->msg_no_article_selected}')">스팸신고 및 삭제</button></span>
+	<span class="button green"><button type="button" <!--@if($nspam_not_in_use)-->onclick="checkSpamConfig('{$lang->msg_dont_use_nspam}')"<!--@elseif($no_spamfilter_specified)-->onclick="checkSpamConfig('{$lang->msg_no_spamfilter_specified}')"<!--@else-->onclick="doSpamProccess('comment', '{$lang->msg_no_article_selected}')"<!--@end-->>{$lang->cmd_apply_spam_settings}</button></span>
+	<span class="button red"><button type="button" onclick="sendSpamContents('comment', '{$lang->msg_no_article_selected}')">{$lang->cmd_report_as_spam_and_delete}</button></span>
 </div>
 <!-- 모듈 선택 -->
 <!--
@@ -46,7 +46,7 @@
         <th scope="col"><div>{$lang->nick_name}</div></th>
         <th scope="col"><div>{$lang->date}</div></th>
         <th scope="col"><div>{$lang->ipaddress}</div></th>
-        <th scope="col"><div>스팸지수</div></th>
+        <th scope="col"><div>{$lang->spamscore}</div></th>
     </tr>
 </thead>
 <tbody>

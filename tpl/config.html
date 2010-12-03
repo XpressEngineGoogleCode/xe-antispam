@@ -11,7 +11,7 @@
 		<td>
 			<input type="checkbox" name="use_nspam" value="Y" id="nspam_enable" <!--@if($nspam_config->use_nspam=='Y')-->checked="checked"<!--@end--> />
 			<label for="nspam_enable">
-				사용
+				{$lang->use}
 			</label>
 		</td>
 	</tr>
@@ -82,33 +82,28 @@
 			<p>{$lang->about_nspam_test_api}</p>
 			<textarea id="test_content" rows="6" cols="80"></textarea>
 			<br />
-			<span class="button"><button type="button" onclick="testGetSpamScore()">스팸지수 확인</button></span>
+			<span class="button"><button type="button" onclick="testGetSpamScore()">{$lang->cmd_nspam_test_api}</button></span>
 		</td>
 	</tr>
 
 	<tr>
-		<th>스팸대응 설정</th>
+		<th>{$lang->nspam_spam_settings}</th>
 		<td>
-<p>스팸 공동대응센터에서 설정한 스팸필터와 스팸사전을 통해 확인된 '스팸 지수'가 있습니다. 스팸 지수를 이용하여 글을 어떻게 처리할 것인지 다룹니다.</p>
-			<!--<strong>- 삭제 : </strong>
-				<input type="text" name="score_delete_content" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_delete_content}" />이상이면 DB에서 완전히 삭제 합니다.
+<p>{$lang->about_nspam_settings}</p>
 
-	<br />-->
-
-			사용<input type="checkbox" name="use_trash_content" value="Y" id="trash_content_enable" <!--@if($nspam_config->use_trash_content=='Y')-->checked="ckecked"<!--@end--> />
-			<strong>- 보관 : </strong>
-				<input type="text" name="score_trash_content" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_trash_content}" />이상이면 목록에서 삭제 후 보관함 으로 이동 합니다.
+			{$lang->use}<input type="checkbox" name="use_trash_content" value="Y" id="trash_content_enable" <!--@if($nspam_config->use_trash_content=='Y')-->checked="ckecked"<!--@end--> />
+			<strong>- {$lang->nspam_keep} : </strong>
+				<input type="text" name="score_trash_content" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_trash_content}" />{$lang->about_nspam_keep}
+	<br />
+			{$lang->use}<input type="checkbox" name="use_deny_ip" value="Y" id="deny_ip_enable" <!--@if($nspam_config->use_deny_ip=='Y')-->checked="ckecked"<!--@end--> />
+			<strong>- {$lang->nspam_deny_ip} : </strong>
+				<input type="text" name="score_denied_ip" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_denied_ip}" />{$lang->about_nspam_deny_ip}
 
 	<br />
-			사용<input type="checkbox" name="use_deny_ip" value="Y" id="deny_ip_enable" <!--@if($nspam_config->use_deny_ip=='Y')-->checked="ckecked"<!--@end--> />
-			<strong>- IP차단 : </strong>
-				<input type="text" name="score_denied_ip" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_denied_ip}" />이상이면 글쓴이의 IP를 차단합니다.
-
-	<br />
-			사용<input type="checkbox" name="use_deny_user" value="Y" id="deny_user_enable" <!--@if($nspam_config->use_deny_user=='Y')-->checked="ckecked"<!--@end--> />
-			<strong>- 계정 사용 중지 : </strong>
-				<input type="text" name="score_deny_user" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_deny_user}" />이상이면 글쓴이의 계정을 사용 중지 합니다. 
-			<p>빈 칸에는 '1 ~ 100' 사이의 숫자를 입력하세요. 숫자는 '스팸 지수(스팸일 확률)'를 의미 합니다. <br />체크된 경우에만 해당 처리를 사용합니다.</p>
+			{$lang->use}<input type="checkbox" name="use_deny_user" value="Y" id="deny_user_enable" <!--@if($nspam_config->use_deny_user=='Y')-->checked="ckecked"<!--@end--> />
+			<strong>- {$lang->nspam_deny_user} : </strong>
+				<input type="text" name="score_deny_user" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_deny_user}" />{$lang->about_nspam_deny_user} 
+			<p>{$lang->about_nspam_settings02}<br />{$lang->about_nspam_settings03}</p>
 		</td>
 	</tr>
 

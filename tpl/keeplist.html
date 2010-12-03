@@ -24,8 +24,8 @@
     </form>
 </div>
 <div class="fr">
-	<span class="button green"><button type="button" onclick="restoreKeepObjects()">선택 복원</button></span>
-	<span class="button red"><button type="button" onclick="deleteKeepObjects()">선택 삭제</button></span>
+	<span class="button green"><button type="button" onclick="restoreKeepObjects()">{$lang->cmd_restore_selected}</button></span>
+	<span class="button red"><button type="button" onclick="deleteKeepObjects()">{$lang->cmd_delete_selected}</button></span>
 </div>
 
 <!-- 목록 -->
@@ -84,7 +84,7 @@
 		<td class="center">{$keep->spam_string}</td>
         <td class="center">{zdate($keep->regdate,'Y.m.d H:i')}</td>
         <td class="center">
-			<span class="button small green"><button type="button" onclick="restoreKeepObject('{$keep->nspam_keep_srl}')">복원</button></span>
+			<span class="button small green"><button type="button" onclick="restoreKeepObject('{$keep->nspam_keep_srl}')">{$lang->cmd_restore}</button></span>
 			<span class="button small red"><button type="button" onclick="deleteKeepObject('{$keep->nspam_keep_srl}')">{$lang->cmd_delete}</button></span>
 		</td>
     </tr>
