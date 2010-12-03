@@ -17,7 +17,8 @@
 	$lang->msg_alert_registered_denied_ip = '스팸 등록으로 차단되었습니다.';
 	$lang->msg_delete_conetnet = '등록되지 않았습니다.';
 	$lang->msg_spam_comment = '스팸 댓글입니다.';
-	$lang->msg_trash_content = '보관함에 보관되었습니다. 관리자 승인 후 등록됩니다.';
+	//$lang->msg_trash_content = '보관함에 보관되었습니다. 관리자 승인 후 등록됩니다.';
+	$lang->msg_trash_content = '스팸으로 판단되어 등록되지 않았습니다. 다시 작성해 주세요.';
 	$lang->msg_restore_error = '복원하지 못했습니다.';
 	$lang->msg_dont_use_nspam = '현재 스팸공동대응 API를 사용하지 않도록 설정되어 있습니다.';
 	$lang->msg_spamapi_error = 'API 에러입니다.';
