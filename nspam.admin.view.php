@@ -82,6 +82,34 @@
 			$this->setLayoutFile('popup_layout');
 		}
 
+		function dispNspamAdminPopupSpamDicContents() {
+
+			//$spamdic_srl = 34;
+
+			$spamdic_srl = Context::get('id');
+			if (!$spamdic_srl) return;
+
+			// 요청 객체를 만들고 인자를 지정.
+			$oReq = new RequestGetSpamDicContents;
+			$oReq->setId($spamdic_srl);
+
+			// 요청.
+			$output = $oReq->request();
+			if (!$output || !$output->words || !$output->words->item) return new Object(-1, 'msg_invalid_request');
+
+			$words = array();
+
+			foreach ($output->words->item as $key => $val) {
+				$words[] = $val->word;
+
+			}
+
+			Context::set('spamdic_srl', $output->spamdic_srl);
+			Context::set('words', $words);
+
+			$this->setLayoutFile('popup_layout');
+		}
+
 		function dispNspamAdminConfig(){
 			$type = Context::get('type');
 			if(!in_array($type,array('document','comment','trackback'))) $type = 'document';

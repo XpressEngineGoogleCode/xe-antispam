@@ -18,6 +18,7 @@
         <action name="dispNspamAdminDeniedIPList" type="view" standalone="true" />
         <action name="dispNspamAdminPopupSpamFilters" type="view" standalone="true" />
         <action name="dispNspamAdminPopupSpamDics" type="view" standalone="true" />
+        <action name="dispNspamAdminPopupSpamDicContents" type="view" standalone="true" />
         <action name="dispNspamAdminTestGetSpamScore" type="view" standalone="true" />
 		<action name="dispNspamAdminDeniedMemberList" type="view" standalone="true" />
 

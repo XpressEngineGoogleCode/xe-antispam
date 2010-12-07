@@ -10,6 +10,8 @@
 	require_once(_XE_PATH_.'modules/nspam/libs/RequestGetSpamDics.class.php');
 	require_once(_XE_PATH_.'modules/nspam/libs/RequestGetSpamScores.class.php');
 	require_once(_XE_PATH_.'modules/nspam/libs/RequestPutSpamContents.class.php');
+	require_once(_XE_PATH_.'modules/nspam/libs/RequestGetSpamDicContents.class.php');
+
 
 	class nspam extends ModuleObject {
 
