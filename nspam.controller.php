@@ -89,12 +89,6 @@
 			if($is_logged) {
 				if($logged_info->is_admin == 'Y') return new Object();
 				if($grant->manager) return new Object();
-
-				$obj->member_srl = $logged_info->member_srl;
-				$obj->nick_name = $logged_info->nick_name;
-				$obj->email_address = $logged_info->email_address;
-				$obj->homepage = $logged_info->homepage;
-
 			}
 			
 			// pass
