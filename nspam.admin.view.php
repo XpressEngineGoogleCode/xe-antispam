@@ -84,14 +84,16 @@
 
 		function dispNspamAdminPopupSpamDicContents() {
 
-			//$spamdic_srl = 34;
-
 			$spamdic_srl = Context::get('id');
+			$page = Context::get('page');
+			$per = 10;
 			if (!$spamdic_srl) return;
 
 			// 요청 객체를 만들고 인자를 지정.
 			$oReq = new RequestGetSpamDicContents;
 			$oReq->setId($spamdic_srl);
+			$oReq->setPage($page);
+			$oReq->setPer($per);
 
 			// 요청.
 			$output = $oReq->request();
@@ -106,6 +108,11 @@
 
 			Context::set('spamdic_srl', $output->spamdic_srl);
 			Context::set('words', $words);
+
+			$page_navigation = new PageHandler($output->total, ceil($output->total/$output->per), $output->page, $output->per);
+			Context::set('page_navigation',$page_navigation);
+			Context::set('page', $output->page);
+			Context::set('per', $output->per);
 
 			$this->setLayoutFile('popup_layout');
 		}

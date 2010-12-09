@@ -9,5 +9,13 @@ class RequestGetSpamDicContents extends RequestSpamApi{
 		$this->add('id',$id);
 	}
 
+	function setPage($page) {
+		$this->add('page', $page);
+	}
+
+	function setPer($per) {
+		$this->add('per', $per);
+	}
+
 }
 ?>

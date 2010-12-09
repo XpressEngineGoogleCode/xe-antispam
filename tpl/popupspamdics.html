@@ -34,7 +34,7 @@ function selected(id){
 			<td>{$v->author}({$v->email})</td>
 			<td>
 				<span class="button small red"><button type="buttton" onclick="selected({$v->id})">{$lang->cmd_select}</button></span>
-				<a class="button small green" onclick="popopen(this.href, ''); return false;" href="{getUrl('','module','nspam','act','dispNspamAdminPopupSpamDicContents','id',$v->id)}"><span>내용보기</span></a>
+				<a class="button small green" onclick="popopen(this.href, ''); return false;" href="{getUrl('','module','nspam','act','dispNspamAdminPopupSpamDicContents','id',$v->id, 'page', 1)}"><span>내용보기</span></a>
 			</td>
         </tr>
 		<tr>

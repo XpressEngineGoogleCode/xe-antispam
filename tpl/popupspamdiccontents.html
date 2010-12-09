@@ -19,7 +19,7 @@
 		<input type="hidden" id="name_{$v->id}" value="{$v->name}" />
 		<input type="hidden" id="auther_{$v->id}" value="{$v->author}" />
         <tr>
-            <td>{$k+1}</td>
+            <td>{(intval($page)-1)*intval($per)+intval($k)+1}</td>
 			<td>{$v}</td>
         </tr>
         <!--@end-->
@@ -28,3 +28,15 @@
 
 </div>
 
+<!-- 페이지 네비게이션 -->
+<div class="pagination a1">
+	<a href="{getUrl('page','')}" class="prevEnd">{$lang->first_page}</a> 
+	<!--@while($page_no = $page_navigation->getNextPage())-->
+		<!--@if($page == $page_no)-->
+			<strong>{$page_no}</strong> 
+		<!--@else-->
+			<a href="{getUrl('page',$page_no)}">{$page_no}</a> 
+		<!--@end-->
+	<!--@end-->
+	<a href="{getUrl('page',$page_navigation->last_page)}" class="nextEnd">{$lang->last_page}</a>
+</div>
