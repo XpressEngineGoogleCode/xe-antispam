@@ -1,0 +1,4 @@
+.childNavigation{ position:relative; overflow:hidden; font-size:12px; margin:15px 0; padding:0;}
+.childNavigation li{ position:relative; left:-1px; display:inline; padding:0 5px 0 10px; border-left:1px solid #ddd;}
+.childNavigation li.on{ font-weight:bold;}
+.childNavigation li a{ color:#767676;}

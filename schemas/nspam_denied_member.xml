@@ -1,0 +1,8 @@
+<table name="nspam_denied_member">
+	<column name="member_srl" type="number" size="11" notnull="notnull" primary_key="primary_key" />
+    <column name="regdate" type="date" index="idx_regdate" />
+	<column name="detected" type="char" size="1" />
+	<column name="dict_id" type="varchar" size="10" />
+    <column name="spam_string" type="text" />
+    <column name="score" type="number" size="3" />
+</table>

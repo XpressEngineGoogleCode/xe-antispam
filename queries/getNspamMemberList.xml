@@ -1,0 +1,23 @@
+<query id="getNspamMemberList" action="select">
+    <tables>
+        <table name="nspam_denied_member" />
+		<table name="member" />
+    </tables>
+    <columns>
+		<column name="nspam_denied_member.member_srl" alias="member_srl" />
+		<column name="member.user_id" alias="user_id" />
+		<column name="member.user_name" alias="user_name" />
+		<column name="member.nick_name" alias="nick_name" />
+		<column name="nspam_denied_member.regdate" alias="regdate" />
+		<column name="nspam_denied_member.score" alias="score" />
+		<column name="nspam_denied_member.detected" alias="detected" />
+		<column name="nspam_denied_member.dict_id" alias="dict_id" />
+		<column name="nspam_denied_member.spam_string" alias="spam_string" />
+    </columns>
+	<conditions>
+		<condition operation="equal" column="nspam_denied_member.member_srl" default="member.member_srl" notnull="notnull" />
+	</conditions>
+    <navigation>
+        <index var="sort_index" default="nspam_denied_member.regdate" order="desc" />
+    </navigation>
+</query>

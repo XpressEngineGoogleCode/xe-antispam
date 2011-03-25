@@ -1,0 +1,13 @@
+<query id="insertNspamDeniedMember" action="insert">
+    <tables>
+        <table name="nspam_denied_member" />
+    </tables>
+    <columns>
+        <column name="member_srl" var="member_srl" notnull="notnull" />
+        <column name="regdate" default="curdate()" />
+		<column name="score" var="score" />
+		<column name="dict_id" var="dict_id" />
+		<column name="spam_string" var="spam_string" />
+		<column name="detected" var="detected" />
+    </columns>
+</query>

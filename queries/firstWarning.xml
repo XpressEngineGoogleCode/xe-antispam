@@ -1,0 +1,10 @@
+<query id="firstWarning" action="insert">
+    <tables>
+        <table name="nspam_denied_ip" />
+    </tables>
+    <columns>
+        <column name="ipaddress" var="ipaddress" notnull="notnull" />
+        <column name="regdate" var="regdate" default="curdate()" />
+		<column name="warn_count" var="warn_count" default="1" />
+    </columns>
+</query>

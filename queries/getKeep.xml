@@ -1,0 +1,11 @@
+<query id="getKeep" action="select">
+    <tables>
+        <table name="nspam_keep" />
+    </tables>
+    <columns>
+        <column name="*" />
+    </columns>
+	<conditions>
+        <condition operation="equal" column="nspam_keep_srl" var="nspam_keep_srl" filter="number" notnull="notnull" />
+	</conditions>
+</query>

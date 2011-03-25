@@ -1,0 +1,12 @@
+<filter name="insert_memo_item" module="memo" act="procMemoItemInsert" confirm_msg_code="confirm_submit">
+    <form>
+        <node target="content" required="true" maxlength="250" />
+        <node target="nick_name" required="true" maxlength="20"/>
+        <node target="password" required="true" />
+    </form>
+    <response callback_func="completeInsertMemoItem">
+        <tag name="error" />
+        <tag name="message" />
+        <tag name="memo_srl" />
+    </response>
+</filter>
