@@ -29,8 +29,8 @@
 <!-- 검색 -->
 <div class="fl">
 	<form actiom="./" method="get" class="adminSearch">
-		<input type="hidden" name="module" value="{$module}" />
-		<input type="hidden" name="act" value="{$act}" />
+		<input type="hidden" name="module" value="{htmlspecialchars($module)}" />
+		<input type="hidden" name="act" value="{htmlspecialchars($act)}" />
 		<input type="hidden" name="module_srl" value="{$module_srl}" />
 
 		<fieldset>
@@ -58,10 +58,10 @@
     <!--@foreach($ip_list as $no => $val)-->
     <tr class="row{$cycle_idx}">
         <td>{count($ip_list)-$no}</td>
-		<td><input type="checkbox" class="check_denied_ip" name="cart" value="{$val->ipaddress}" /></td>
-        <td class="wide">{$val->ipaddress}</td>
+		<td><input type="checkbox" class="check_denied_ip" name="cart" value="{htmlspecialchars($val->ipaddress)}" /></td>
+        <td class="wide">{htmlspecialchars($val->ipaddress)}</td>
         <td>{zdate($val->regdate,"Y-m-d")}</td>
-        <td><a href="#" onclick="doDeleteDeniedIP('{$val->ipaddress}');return false;" title="{$lang->cmd_delete}" class="buttonSet buttonDelete"><span>{$lang->cmd_delete}</span></a></td>
+        <td><a href="#" onclick="doDeleteDeniedIP('{htmlspecialchars($val->ipaddress)}');return false;" title="{$lang->cmd_delete}" class="buttonSet buttonDelete"><span>{$lang->cmd_delete}</span></a></td>
     </tr>
     <!--@end-->
 </tbody>

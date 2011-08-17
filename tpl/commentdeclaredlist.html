@@ -21,11 +21,11 @@
     <!--@foreach($comment_list as $no => $oComment)-->
     <tr>
         <td>{$no}</td>
-        <td><input type="checkbox" name="cart" class="check_content_srl" value="{$oComment->get('comment_srl')}" /> <a href="{getUrl('','document_srl',$oComment->get('document_srl'))}#comment_{$oComment->get('comment_srl')}" onclick="window.open(this.href);return false;">{$oComment->getSummary(100)}</a></td>
-        <td><span class="member_{$oComment->getMemberSrl()}">{$oComment->getNickName()}</span></td>
+        <td><input type="checkbox" name="cart" class="check_content_srl" value="{$oComment->get('comment_srl')}" /> <a href="{getUrl('','document_srl',$oComment->get('document_srl'))}#comment_{$oComment->get('comment_srl')}" onclick="window.open(this.href);return false;">{htmlspecialchars($oComment->getSummary(100))}</a></td>
+        <td><span class="member_{$oComment->getMemberSrl()}">{htmlspecialchars($oComment->getNickName())}</span></td>
         <td>{$oComment->getRegdate("Y-m-d")}</td>
         <td><strong>{$oComment->get('declared_count')}</strong></td>
-        <td>{$oComment->get('ipaddress')}</td>
+        <td>{htmlspecialchars($oComment->get('ipaddress'))}</td>
     </tr>
     <!--@end-->
     <tr>
@@ -42,12 +42,12 @@
 <!-- 페이지 네비게이션 -->
 <div class="clear"></div>
 <div class="pagination a1">
-    <a href="{getUrl('page','','module_srl','')}" class="prevEnd">{$lang->first_page}</a> 
+    <a href="{getUrl('page','','module_srl','')}" class="prevEnd">{$lang->first_page}</a>
     <!--@while($page_no = $page_navigation->getNextPage())-->
         <!--@if($page == $page_no)-->
-            <strong>{$page_no}</strong> 
+            <strong>{$page_no}</strong>
         <!--@else-->
-            <a href="{getUrl('page',$page_no,'module_srl','')}">{$page_no}</a> 
+            <a href="{getUrl('page',$page_no,'module_srl','')}">{$page_no}</a>
         <!--@end-->
     <!--@end-->
     <a href="{getUrl('page',$page_navigation->last_page,'module_srl','')}" class="nextEnd">{$lang->last_page}</a>

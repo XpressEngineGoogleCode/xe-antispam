@@ -7,15 +7,15 @@
 <!-- 검색 -->
 <div class="fl">
     <form action="./" method="get" class="adminSearch">
-    <input type="hidden" name="module" value="{$module}" />
-    <input type="hidden" name="act" value="{$act}" />
+    <input type="hidden" name="module" value="{htmlspecialchars($module)}" />
+    <input type="hidden" name="act" value="{htmlspecialchars($act)}" />
     <input type="hidden" name="module_srl" value="{$module_srl}" />
 
         <fieldset>
             <select name="search_target">
                 <option value="">{$lang->search_target}</option>
                 <!--@foreach($lang->banned_search_target_list as $key => $val)-->
-                <option value="{$key}" <!--@if($search_target==$key)-->selected="selected"<!--@end-->>{$val}</option>
+                <option value="{htmlspecialchars($key)}" <!--@if($search_target==$key)-->selected="selected"<!--@end-->>{htmlspecialchars($val)}</option>
                 <!--@end-->
             </select>
             <input type="text" name="search_keyword" value="{htmlspecialchars($search_keyword)}" class="inputTypeText" />
@@ -49,33 +49,33 @@
 		<!--@if($keep->type == 'document')-->
 			<td class="center">{$lang->document}</td>
 			{@$oDocument = $keep->oDocument}
-			<td class="nowrap"><span class="member_{$oDocument->get('member_srl')}">{$oDocument->getNickName()}</span></td>
+			<td class="nowrap"><span class="member_{$oDocument->get('member_srl')}">{htmlspecialchars($oDocument->getNickName())}</span></td>
 			<td class="left subject">
-				<strong>{$oDocument->getTitleText(50)}</strong>
-				{$oDocument->getContentText(100)}
+				<strong>{htmlspecialchars($oDocument->getTitleText(50))}</strong>
+				{htmlspecialchars($oDocument->getContentText(100))}
 			</td>
 
 		<!--@elseif($keep->type == 'comment')-->
 			<td class="center">{$lang->comment}</td>
 			{@$oComment = $keep->oComment}
-			<td class="nowrap"><span class="member_{$oComment->get('member_srl')}">{$oComment->getNickName()}</span></td>
+			<td class="nowrap"><span class="member_{$oComment->get('member_srl')}">{htmlspecialchars($oComment->getNickName())}</span></td>
 			<td class="left subject">
-				{$oComment->getContentText(100)}
+				{htmlspecialchars($oComment->getContentText(100))}
 			</td>
 		<!--@elseif($keep->type == 'trackback')-->
 			<td class="center">{$lang->trackback}</td>
 			{@$oTrackback = $keep->oTrackback}
-			<td class="nowrap">{$oTrackback->blog_name}</td>
+			<td class="nowrap">{htmlspecialchars($oTrackback->blog_name)}</td>
 			<td class="left subject">
-				<strong>{$oTrackback->title}</strong>
-				{$oTrackback->excerpt}
+				<strong>{htmlspecialchars($oTrackback->title)}</strong>
+				{htmlspecialchars($oTrackback->excerpt)}
 			</td>
 
 		<!--@end-->
-		<td class="center">{$keep->score}</td>
-		<td class="center">{$keep->detected}</td>
-		<td class="center">{$keep->dict_id}</td>
-		<td class="center">{$keep->spam_string}</td>
+		<td class="center">{htmlspecialchars($keep->score)}</td>
+		<td class="center">{htmlspecialchars($keep->detected)}</td>
+		<td class="center">{htmlspecialchars($keep->dict_id)}</td>
+		<td class="center">{htmlspecialchars($keep->spam_string)}</td>
         <td class="center">{zdate($keep->regdate,'Y.m.d H:i')}</td>
     </tr>
     <!--@end-->
@@ -87,12 +87,12 @@
 
 <!-- 페이지 네비게이션 -->
 <div class="pagination a1">
-    <a href="{getUrl('page','','module_srl',$module_srl)}" class="prevEnd">{$lang->first_page}</a> 
+    <a href="{getUrl('page','','module_srl',$module_srl)}" class="prevEnd">{$lang->first_page}</a>
     <!--@while($page_no = $page_navigation->getNextPage())-->
         <!--@if($page == $page_no)-->
-            <strong>{$page_no}</strong> 
+            <strong>{$page_no}</strong>
         <!--@else-->
-            <a href="{getUrl('page',$page_no,'module_srl',$module_srl)}">{$page_no}</a> 
+            <a href="{getUrl('page',$page_no,'module_srl',$module_srl)}">{$page_no}</a>
         <!--@end-->
     <!--@end-->
     <a href="{getUrl('page',$page_navigation->last_page,'module_srl',$module_srl)}" class="nextEnd">{$lang->last_page}</a>

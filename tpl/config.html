@@ -2,7 +2,7 @@
 <!--%import("filter/insert_config.xml")-->
 
 <form action="" onsubmit="return filterInsertConfig(this)" >
-<input type="hidden" name="type" value="{$type}" />
+<input type="hidden" name="type" value="{htmlspecialchars($type)}" />
 
 <table class="rowTable" cellspacing="0">
 	<tbody>
@@ -20,11 +20,11 @@
 		<td>
 			<p>{$lang->about_modules_to_exclude}</p>
 			<input type="hidden" name="module_apply" value="deny" id="module_deny" />
-			<input type="hidden" id="target_module" name="target_module" value="<!--@if(is_array($nspam_config->target_module))-->{join(',',$nspam_config->target_module)}<!--@end-->" />
+			<input type="hidden" id="target_module" name="target_module" value="<!--@if(is_array($nspam_config->target_module))-->{htmlspecialchars(join(',',$nspam_config->target_module))}<!--@end-->" />
 			<select id="_target_module" size="10" style="width:200px">
 			<!--@if($config_target_modules_info)-->
 				<!--@foreach($config_target_modules_info as $info)-->
-				<option value="{$info->module_srl}">{$info->browser_title}({$info->module})</option>
+				<option value="{$info->module_srl}">{htmlspecialchars($info->browser_title)}({htmlspecialchars($info->module)})</option>
 				<!--@end-->
 			<!--@end-->
 			</select>
@@ -39,13 +39,13 @@
 		<td>
 		<p>{$lang->about_nspam_spamfilter}</p>
 		<p>
-			<input type="hidden" id="use_spamfilters" name="use_spamfilters" value="<!--@if(is_array($nspam_config->use_spamfilters))-->{join(',',array_keys($nspam_config->use_spamfilters))}<!--@end-->" />
+			<input type="hidden" id="use_spamfilters" name="use_spamfilters" value="<!--@if(is_array($nspam_config->use_spamfilters))-->{htmlspecialchars(join(',',array_keys($nspam_config->use_spamfilters)))}<!--@end-->" />
 			<input type="hidden" id="use_spamfilters_info" name="use_spamfilters_info" value="" />
 
 			<select id="_use_spamfilters" size="5" style="width:200px" class="selected">
 			<!--@if($nspam_config->use_spamfilters)-->
 				<!--@foreach($nspam_config->use_spamfilters as $id => $info)-->
-					<option value="{$id}">{$info}</option>
+					<option value="{htmlspecialchars($id)}">{htmlspecialchars($info)}</option>
 				<!--@end-->
 			<!--@end-->
 			</select>
@@ -60,12 +60,12 @@
 		<td>
 			<p>{$lang->about_nspam_spam_dictionary}</p>
 			<p>{$lang->about_my_spam_dictionary}</p>
-			<input type="hidden" id="use_spamdics" name="use_spamdics" value="<!--@if(is_array($nspam_config->use_spamdics))-->{join(',',array_keys($nspam_config->use_spamdics))}<!--@end-->"/>
+			<input type="hidden" id="use_spamdics" name="use_spamdics" value="<!--@if(is_array($nspam_config->use_spamdics))-->{htmlspecialchars(join(',',array_keys($nspam_config->use_spamdics)))}<!--@end-->"/>
 			<input type="hidden" id="use_spamdics_info" name="use_spamdics_info" value="" />
 			<select id="_use_spamdics" size="5" style="width:200px" class="selected">
 			<!--@if($nspam_config->use_spamdics)-->
 				<!--@foreach($nspam_config->use_spamdics as $id => $info)-->
-					<option value="{$id}">{$info}</option>
+					<option value="{htmlspecialchars($id)}">{htmlspecialchars($info)}</option>
 				<!--@end-->
 			<!--@end-->
 
@@ -93,16 +93,16 @@
 
 			{$lang->use}<input type="checkbox" name="use_trash_content" value="Y" id="trash_content_enable" <!--@if($nspam_config->use_trash_content=='Y')-->checked="ckecked"<!--@end--> />
 			<strong>- {$lang->nspam_keep} : </strong>
-				<input type="text" name="score_trash_content" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_trash_content}" />{$lang->about_nspam_keep}
+				<input type="text" name="score_trash_content" maxlength="3" size="3" class="inputTypeText" value="{htmlspecialchars($nspam_config->score_trash_content)}" />{$lang->about_nspam_keep}
 	<br />
 			{$lang->use}<input type="checkbox" name="use_deny_ip" value="Y" id="deny_ip_enable" <!--@if($nspam_config->use_deny_ip=='Y')-->checked="ckecked"<!--@end--> />
 			<strong>- {$lang->nspam_deny_ip} : </strong>
-				<input type="text" name="score_denied_ip" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_denied_ip}" />{$lang->about_nspam_deny_ip}
+				<input type="text" name="score_denied_ip" maxlength="3" size="3" class="inputTypeText" value="{htmlspecialchars($nspam_config->score_denied_ip)}" />{$lang->about_nspam_deny_ip}
 
 	<br />
 			{$lang->use}<input type="checkbox" name="use_deny_user" value="Y" id="deny_user_enable" <!--@if($nspam_config->use_deny_user=='Y')-->checked="ckecked"<!--@end--> />
 			<strong>- {$lang->nspam_deny_user} : </strong>
-				<input type="text" name="score_deny_user" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_deny_user}" />{$lang->about_nspam_deny_user} 
+				<input type="text" name="score_deny_user" maxlength="3" size="3" class="inputTypeText" value="{htmlspecialchars($nspam_config->score_deny_user)}" />{$lang->about_nspam_deny_user}
 			<p>{$lang->about_nspam_settings02}<br />{$lang->about_nspam_settings03}</p>
 		</td>
 	</tr>
