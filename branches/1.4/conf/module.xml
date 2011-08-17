@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+	<grants />
+    <permissions />
+    <actions>
+        <action name="dispNspamAdminConfig" type="view" standalone="true" admin_index="true" />
+        <action name="dispNspamAdminUsedPluginSpamDicList" type="view" standalone="true" />
+        <action name="dispNspamAdminPluginList" type="view" standalone="true" />
+        <action name="dispNspamAdminSpamDicList" type="view" standalone="true" />
+        <action name="dispNspamAdminDocumentList" type="view" standalone="true" />
+        <action name="dispNspamAdminDocumentDeclaredList" type="view" standalone="true" />
+        <action name="dispNspamAdminDocumentTrashList" type="view" standalone="true" />
+        <action name="dispNspamAdminCommentList" type="view" standalone="true" />
+        <action name="dispNspamAdminCommentDeclaredList" type="view" standalone="true" />
+        <action name="dispNspamAdminTrackbackList" type="view" standalone="true" />
+        <action name="dispNspamAdminKeepList" type="view" standalone="true" />
+        <action name="dispNspamAdminBannedList" type="view" standalone="true" />
+        <action name="dispNspamAdminDeniedIPList" type="view" standalone="true" />
+        <action name="dispNspamAdminPopupSpamFilters" type="view" standalone="true" />
+        <action name="dispNspamAdminPopupSpamDics" type="view" standalone="true" />
+        <action name="dispNspamAdminPopupSpamDicContents" type="view" standalone="true" />
+        <action name="dispNspamAdminTestGetSpamScore" type="view" standalone="true" />
+		<action name="dispNspamAdminDeniedMemberList" type="view" standalone="true" />
+
+        <action name="procNspamSendContent" type="controller" />
+        <action name="procNspamGetScore" type="controller" />
+
+        <action name="procNspamAdminConfigUpdate" type="controller" standalone="true" />
+        <action name="procNspamAdminRestoreObject" type="controller" standalone="true" />
+        <action name="procNspamAdminDeleteObject" type="controller" standalone="true" />
+        <action name="procNspamAdminPutSpamContents" type="controller" standalone="true" />
+        <action name="procNspamAdminInsertDeniedIP" type="controller" standalone="true" />
+        <action name="procNspamAdminDeleteDeniedIP" type="controller" standalone="true" />
+		<action name="procNspamAdminDeleteDeniedIPs" type="controller" standalone="true" />
+        <action name="procNspamAdminDoProccess" type="controller" standalone="true" />
+        <action name="procNspamAdminAllTrackbackDoProccess" type="controller" standalone="true" />
+        <action name="procNspamAdminAllDocumentTrashSendSpam" type="controller" standalone="true" />
+        <action name="procNspamAdminTestGetSpamScore" type="controller" standalone="true" />
+		<action name="procNspamAdminDeleteDeniedMembers" type="controller" standalone="true" />
+		<action name="procNspamAdminDeleteDeniedMember" type="controller" standalone="true" />
+    </actions>
+</module>

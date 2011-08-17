@@ -1,0 +1,61 @@
+<script type="text/javascript">
+function selected(id){
+	var target = jQuery('#target_obj').val();
+	if(!window.opener || !window.opener.jQuery('#'+target).length>0) return;
+	if(typeof(window.opener.insertSelected)=='undefined') return;
+	var val = jQuery('#name_'+id).val() +'('+ jQuery('#auther_'+id).val() +')';
+	window.opener.insertSelected(target,id,val);
+}
+</script>
+
+<input type="hidden" id="target_obj" value="{$id}" />
+
+<div id="popHeader" class="wide">
+    <h3 class="xeAdmin">{$lang->cmd_select_spam_dictionary}</h3>
+</div>
+
+<div id="popBody">
+    <p class="summary">{$lang->about_nspam_spam_dictionary}</p>
+    <table cellspacing="0" class="crossTable">
+    <thead>
+    <tr>
+        <th scope="col"><div>{$lang->nspam_spamdic_name}</div></th>
+        <th scope="col"><div>{$lang->author}</div></th>
+        <th scope="col">&nbsp;</th>
+    </tr>
+    </thead>
+
+    <tbody>
+        <!--@foreach($spamdic_list as $k => $v)-->
+		<input type="hidden" id="name_{$v->id}" value="{$v->name}" />
+		<input type="hidden" id="auther_{$v->id}" value="{$v->author}" />
+        <tr>
+            <td><div style="font-weight:bold;">{$v->name}</div></td>
+			<td>{$v->author}({$v->email})</td>
+			<td>
+				<span class="button small red"><button type="buttton" onclick="selected({$v->id})">{$lang->cmd_select}</button></span>
+				<a class="button small green" onclick="popopen(this.href, ''); return false;" href="{getUrl('','module','nspam','act','dispNspamAdminPopupSpamDicContents','id',$v->id, 'page', 1)}"><span>내용보기</span></a>
+			</td>
+        </tr>
+		<tr>
+            <td colspan="3">{$v->description}</td>
+		</tr>
+        <!--@end-->
+    </tbody>
+    </table>
+
+</div>
+
+<!-- 페이지 네비게이션 -->
+<div class="pagination a1">
+	<a href="{getUrl('page','')}" class="prevEnd">{$lang->first_page}</a> 
+	<!--@while($page_no = $page_navigation->getNextPage())-->
+		<!--@if($page == $page_no)-->
+			<strong>{$page_no}</strong> 
+		<!--@else-->
+			<a href="{getUrl('page',$page_no)}">{$page_no}</a> 
+		<!--@end-->
+	<!--@end-->
+	<a href="{getUrl('page',$page_navigation->last_page)}" class="nextEnd">{$lang->last_page}</a>
+</div>
+

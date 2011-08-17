@@ -1,0 +1,11 @@
+<query id="getItemList" action="select">
+	<tables>
+		<table name="nspam_item_list" />
+	</tables>
+	<columns>
+		<column name="*" />
+	</columns>
+	<conditions>
+		<condition operation="in" column="document_srl" var="document_srls" />
+	</conditions>
+</query>

@@ -1,0 +1,12 @@
+<query id="insertItem" action="insert">
+	<tables>
+		<table name="nspam_item_list" />
+	</tables>
+	<columns>
+		<column name="document_srl" var="document_srl" />
+		<column name="detected" var="detected" />
+		<column name="dict_id" var="dict_id" />
+		<column name="spam_string" var="spam_string" />
+		<column name="score" var="score" />
+	</columns>
+</query>

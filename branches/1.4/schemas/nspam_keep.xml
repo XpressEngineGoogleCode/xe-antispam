@@ -1,0 +1,13 @@
+<table name="nspam_keep">
+    <column name="nspam_keep_srl" type="number" size="11" notnull="notnull" primary_key="primary_key" />
+	<column name="type" type="varchar" size="10"  default="document" />
+	<column name="title_content" type="text" />
+	<column name="user_id" type="varchar" size="80" />
+	<column name="data" type="text" />
+    <column name="regdate" type="date" index="idx_regdate" />
+	<column name="detected" type="char" size="1" />
+	<column name="by_trigger" type="char" size="1" />
+	<column name="dict_id" type="varchar" size="10" />
+    <column name="spam_string" type="text" />
+    <column name="score" type="number" size="3" />
+</table>

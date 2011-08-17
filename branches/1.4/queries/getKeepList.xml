@@ -1,0 +1,25 @@
+<query id="getKeepList" action="select">
+    <tables>
+        <table name="nspam_keep" />
+    </tables>
+    <columns>
+        <column name="*" />
+    </columns>
+
+    <conditions>
+        <condition operation="equal" column="type" var="type" />
+		<condition operation="equal" column="by_trigger" var="by_trigger" pipe="and" />
+		<group pipe="and">
+			<condition operation="more" column="score" var="score" />
+			<condition operation="like" column="title_content" var="title_content" pipe="or" />
+			<condition operation="like" column="user_id" var="user_id" pipe="or" />
+			<condition operation="like_prefix" column="regdate" var="regdate" pipe="or" />
+		</group>
+    </conditions>
+    <navigation>
+		<index var="list_order" default="regdate" order="desc" />
+		<list_count var="list_count" default="20" />
+        <page_count var="page_count" default="10" />
+        <page var="page" default="1" />
+    </navigation>
+</query>

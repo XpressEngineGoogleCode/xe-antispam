@@ -1,0 +1,124 @@
+<!--#include("_header.html")-->
+<!--%import("filter/insert_config.xml")-->
+
+<form action="" onsubmit="return filterInsertConfig(this)" >
+<input type="hidden" name="type" value="{$type}" />
+
+<table class="rowTable" cellspacing="0">
+	<tbody>
+	<tr>
+		<th>{$lang->nspam_whether_to_use}</th>
+		<td>
+			<input type="checkbox" name="use_nspam" value="Y" id="nspam_enable" <!--@if($nspam_config->use_nspam=='Y')-->checked="checked"<!--@end--> />
+			<label for="nspam_enable">
+				{$lang->use}
+			</label>
+		</td>
+	</tr>
+	<tr>
+		<th>{$lang->nspam_modules_to_exclude}</th>
+		<td>
+			<p>{$lang->about_modules_to_exclude}</p>
+			<input type="hidden" name="module_apply" value="deny" id="module_deny" />
+			<input type="hidden" id="target_module" name="target_module" value="<!--@if(is_array($nspam_config->target_module))-->{join(',',$nspam_config->target_module)}<!--@end-->" />
+			<select id="_target_module" size="10" style="width:200px">
+			<!--@if($config_target_modules_info)-->
+				<!--@foreach($config_target_modules_info as $info)-->
+				<option value="{$info->module_srl}">{$info->browser_title}({$info->module})</option>
+				<!--@end-->
+			<!--@end-->
+			</select>
+			<div>
+				<a class="button green" onclick="popopen(this.href,'ModuleSelect');return false;" href="{getUrl('','module','module','act','dispModuleSelectList','id','target_module')}"><span>{$lang->cmd_find_module}</span></a>
+				<span class="button red"><button type="button" onclick="midRemove('target_module')">{$lang->cmd_delete}</button></span>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<th>{$lang->nspam_spamfilter}</th>
+		<td>
+		<p>{$lang->about_nspam_spamfilter}</p>
+		<p>
+			<input type="hidden" id="use_spamfilters" name="use_spamfilters" value="<!--@if(is_array($nspam_config->use_spamfilters))-->{join(',',array_keys($nspam_config->use_spamfilters))}<!--@end-->" />
+			<input type="hidden" id="use_spamfilters_info" name="use_spamfilters_info" value="" />
+
+			<select id="_use_spamfilters" size="5" style="width:200px" class="selected">
+			<!--@if($nspam_config->use_spamfilters)-->
+				<!--@foreach($nspam_config->use_spamfilters as $id => $info)-->
+					<option value="{$id}">{$info}</option>
+				<!--@end-->
+			<!--@end-->
+			</select>
+			<div>
+				<a class="button green" onclick="popopen(this.href,'SelectSpam');return false;" href="{getUrl('','module','nspam','act','dispNspamAdminPopupSpamFilters','id','use_spamfilters')}"><span>{$lang->cmd_find_spamfilter}</span></a>
+				<span class="button red"><button type="button" onclick="midRemove('use_spamfilters')">{$lang->cmd_delete}</button></span>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<th>{$lang->nspam_spam_dictionary}</th>
+		<td>
+			<p>{$lang->about_nspam_spam_dictionary}</p>
+			<p>{$lang->about_my_spam_dictionary}</p>
+			<input type="hidden" id="use_spamdics" name="use_spamdics" value="<!--@if(is_array($nspam_config->use_spamdics))-->{join(',',array_keys($nspam_config->use_spamdics))}<!--@end-->"/>
+			<input type="hidden" id="use_spamdics_info" name="use_spamdics_info" value="" />
+			<select id="_use_spamdics" size="5" style="width:200px" class="selected">
+			<!--@if($nspam_config->use_spamdics)-->
+				<!--@foreach($nspam_config->use_spamdics as $id => $info)-->
+					<option value="{$id}">{$info}</option>
+				<!--@end-->
+			<!--@end-->
+
+			</select>
+			<div>
+				<a class="button green" onclick="popopen(this.href,'SelectSpam');return false;" href="{getUrl('','module','nspam','act','dispNspamAdminPopupSpamDics','id','use_spamdics')}"><span>{$lang->cmd_find_spam_dictionary}</span></a>
+				<span class="button red"><button type="button" onclick="midRemove('use_spamdics')">{$lang->cmd_delete}</button></span>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<th>{$lang->nspam_test_api}</th>
+		<td>
+			<p>{$lang->about_nspam_test_api}</p>
+			<textarea id="test_content" rows="6" cols="80"></textarea>
+			<br />
+			<span class="button"><button type="button" onclick="testGetSpamScore()">{$lang->cmd_nspam_test_api}</button></span>
+		</td>
+	</tr>
+
+	<tr>
+		<th>{$lang->nspam_spam_settings}</th>
+		<td>
+<p>{$lang->about_nspam_settings}</p>
+
+			{$lang->use}<input type="checkbox" name="use_trash_content" value="Y" id="trash_content_enable" <!--@if($nspam_config->use_trash_content=='Y')-->checked="ckecked"<!--@end--> />
+			<strong>- {$lang->nspam_keep} : </strong>
+				<input type="text" name="score_trash_content" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_trash_content}" />{$lang->about_nspam_keep}
+	<br />
+			{$lang->use}<input type="checkbox" name="use_deny_ip" value="Y" id="deny_ip_enable" <!--@if($nspam_config->use_deny_ip=='Y')-->checked="ckecked"<!--@end--> />
+			<strong>- {$lang->nspam_deny_ip} : </strong>
+				<input type="text" name="score_denied_ip" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_denied_ip}" />{$lang->about_nspam_deny_ip}
+
+	<br />
+			{$lang->use}<input type="checkbox" name="use_deny_user" value="Y" id="deny_user_enable" <!--@if($nspam_config->use_deny_user=='Y')-->checked="ckecked"<!--@end--> />
+			<strong>- {$lang->nspam_deny_user} : </strong>
+				<input type="text" name="score_deny_user" maxlength="3" size="3" class="inputTypeText" value="{$nspam_config->score_deny_user}" />{$lang->about_nspam_deny_user} 
+			<p>{$lang->about_nspam_settings02}<br />{$lang->about_nspam_settings03}</p>
+		</td>
+	</tr>
+
+
+
+	</tbody>
+	<tfoot>
+		<td colspan="2" class="buttonArea"><span class="button black"><button type="submit">{$lang->cmd_submit}</button></span></td>
+	</tfoot>
+</table>
+</form>
+<script type="text/javascript">
+if(typeof(xe.lang) == 'undefined') xe.lang = {};
+xe.lang.score_deleteContent = '{$lang->score_delete_content}';
+xe.lang.score_trashContent = '{$lang->score_trash_content}';
+xe.lang.score_deniedIP = '{$lang->score_denied_ip}';
+xe.lang.score_deniedUser = '{$lang->score_deny_user}';
+</script>
