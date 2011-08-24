@@ -39,7 +39,15 @@
 			if(!$output || !$output->spamfilters || !$output->spamfilters->item) return new Object(-1,'msg_invalid_request');
 			$item = $output->spamfilters->item;
 			$item = is_object($item) ? array($item) : $item;
-		
+
+			if (is_array($item))
+			{
+				foreach($item as $no => $val)
+				{
+					$item[$no]->description = strip_tags($val->description, '<br/><br>');
+				}
+			}
+
 			Context::set('spamfilter_list', $item);
 
 			$page_navigation = new PageHandler($output->total, ceil($output->total/$output->per), $output->page, $output->per);
@@ -48,6 +56,9 @@
 			Context::set('per', $output->per);
 
 			$this->setLayoutFile('popup_layout');
+
+			$security = new Security();
+			$security->encodeHTML('spamfilter_list..name', 'spamfilter_list..author', 'spamfilter_list..email');
 		}
 
 		function dispNspamAdminPopupSpamDics(){
@@ -72,6 +83,15 @@
 			if(!$output || !$output->spamdics || !$output->spamdics->item) return new Object(-1,'msg_invalid_request');
 			$item = $output->spamdics->item;
 			$item = is_object($item) ? array($item) : $item;
+
+			if (is_array($item))
+			{
+				foreach($item as $no => $val)
+				{
+					$item[$no]->description = strip_tags($val->description, '<br/><br>');
+				}
+			}
+
 			Context::set('spamdic_list', $item);
 
 			$page_navigation = new PageHandler($output->total, ceil($output->total/$output->per), $output->page, $output->per);
@@ -80,6 +100,9 @@
 			Context::set('per', $output->per);
 
 			$this->setLayoutFile('popup_layout');
+
+			$security = new Security();
+			$security->encodeHTML('spamdic_list..name', 'spamdic_list..author', 'spamdic_list..email');
 		}
 
 		function dispNspamAdminPopupSpamDicContents() {
@@ -115,6 +138,9 @@
 			Context::set('per', $output->per);
 
 			$this->setLayoutFile('popup_layout');
+
+			$security = new Security();
+			$security->encodeHTML('words.');
 		}
 
 		function dispNspamAdminConfig(){
@@ -122,8 +148,8 @@
 			if(!in_array($type,array('document','comment','trackback'))) $type = 'document';
 			Context::set('type',$type);
 
-			if($this->config && $this->config->{$type} 
-				&& is_array($this->config->{$type}->target_module) 
+			if($this->config && $this->config->{$type}
+				&& is_array($this->config->{$type}->target_module)
 				&& count($this->config->{$type}->target_module) >0 ){
 				$oModuleModel = &getModel('module');
 				$modules_info = $oModuleModel->getModulesInfo($this->config->{$type}->target_module);
@@ -137,6 +163,9 @@
 			$nspam_config->score_deny_user = $nspam_config->score_deny_user ? $nspam_config->score_deny_user : 100;
 
 			Context::set('nspam_config',$nspam_config);
+
+			$security = new Security();
+			$security->encodeHTML('config_target_modules_info..');
 		}
 
 		function dispNspamAdminDocumentList(){
@@ -162,19 +191,19 @@
 			foreach($output->data as $key => $val) {
 				array_push($document_srls, $val->document_srl);
 			}
-				
+
 			// 스팸지수를 결과에 포함시킴.
 			$args2->document_srls = $document_srls;
 			$spam_scores = executeQuery('nspam.getItemList', $args2);
 
 			if (!is_array($spam_scores->data)) $spam_scores = array($spam_scores->data);
 			else $spam_scores = $spam_scores->data;
-			
+
 			$score_table = array();
 			foreach($spam_scores as $key => $val) {
 				$score_table[$val->document_srl] = $val->score;
 			}
-			
+
 			foreach($output->data as $key => $val) {
 				$output->data[$key]->score = $score_table[$val->document_srl];
 			}
@@ -226,7 +255,7 @@
 			}
 
 
-		
+
 			// 템플릿에 쓰기 위해서 document_model::getDocumentList() 의 return object에 있는 값들을 세팅
 			Context::set('total_count', $declared_output->total_count);
 			Context::set('total_page', $declared_output->total_page);
@@ -274,19 +303,19 @@
 			foreach($output->data as $key => $val) {
 				array_push($comment_srls2, $val->comment_srl);
 			}
-				
+
 			// 스팸지수를 결과에 포함시킴.
 			$args2->document_srls = $comment_srls2;
 			$spam_scores = executeQuery('nspam.getItemList', $args2);
 
 			if (!is_array($spam_scores->data)) $spam_scores = array($spam_scores->data);
 			else $spam_scores = $spam_scores->data;
-			
+
 			$score_table = array();
 			foreach($spam_scores as $key => $val) {
 				$score_table[$val->document_srl] = $val->score;
 			}
-			
+
 			foreach($output->data as $key => $val) {
 				$output->data[$key]->score = $score_table[$val->comment_srl];
 			}
@@ -331,7 +360,7 @@
 				}
 				$declared_output->data = $comment_list;
 			}
-		
+
 			// 템플릿에 쓰기 위해서 comment_model::getCommentList() 의 return object에 있는 값들을 세팅
 			Context::set('total_count', $declared_output->total_count);
 			Context::set('total_page', $declared_output->total_page);
@@ -365,7 +394,7 @@
 		function dispNspamAdminKeepList(){
 			$obj->page = Context::get('page');
 			$obj->by_trigger = 'N';
-			
+
 			// 검색 조건 세팅
 			$search_keyword = Context::get('search_keyword');
 			$search_target = Context::get('search_target');
@@ -387,7 +416,7 @@
 
 			$output = executeQueryArray('nspam.getKeepList',$obj);
 			if(!$output->toBool()) return $output;
-		
+
 			$oDocumentModel = &getModel('document');
 			$oCommentModel = &getModel('comment');
 			$oTrackbackModel = &getModel('trackback');
@@ -416,13 +445,13 @@
 			Context::set('total_count', $output->total_count);
 			Context::set('total_page', $output->total_page);
 			Context::set('page', $output->page);
- 
+
 		}
 
 		function dispNspamAdminBannedList(){
 			$obj->page = Context::get('page');
 			$obj->by_trigger = 'Y';
-			
+
 			// 검색 조건 세팅
 			$search_keyword = Context::get('search_keyword');
 			$search_target = Context::get('search_target');
@@ -444,7 +473,7 @@
 
 			$output = executeQueryArray('nspam.getKeepList',$obj);
 			if(!$output->toBool()) return $output;
-		
+
 			$oDocumentModel = &getModel('document');
 			$oCommentModel = &getModel('comment');
 			$oTrackbackModel = &getModel('trackback');
@@ -473,7 +502,7 @@
 			Context::set('total_count', $output->total_count);
 			Context::set('total_page', $output->total_page);
 			Context::set('page', $output->page);
- 
+
 		}
 
 		/**
@@ -482,7 +511,7 @@
 		function dispNspamAdminDeniedIPList() {
 			// 등록된 금지 IP 목록을 가져옴
 			$oNspamModel = &getModel('nspam');
-				
+
 			$search_keyword = Context::get('search_keyword');
 
 			if($search_keyword) {
@@ -500,7 +529,7 @@
 		function dispNspamAdminDeniedMemberList() {
 
 			$oNspamModel = &getModel('nspam');
-			
+
 			//$search_keyword = Context::get('search_keyword');
 			//$search_target = Context::get('search_target');
 
