@@ -1,0 +1,1 @@
+XE anti-spam is a anti-spam module for [XpressEngine](http://code.google.com/p/xe-core/).
